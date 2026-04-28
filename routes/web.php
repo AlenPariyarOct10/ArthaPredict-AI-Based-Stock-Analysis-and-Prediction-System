@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Stock;
+use App\Models\StockPrice;
+use App\Models\StockPrediction;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -9,7 +12,34 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $stockCount = Stock::where('is_active', true)->count();
+    $latestTradingDate = StockPrice::max('date');
+    $predictionCount = StockPrediction::count();
+    $latestPriceCount = $latestTradingDate
+        ? StockPrice::whereDate('date', $latestTradingDate)->count()
+        : 0;
+
+    $featuredStocks = Stock::where('is_active', true)
+        ->with([
+            'prices' => function ($query) {
+                $query->latest('date')->limit(1);
+            },
+            'predictions' => function ($query) {
+                $query->orderBy('target_date')->limit(1);
+            },
+        ])
+        ->take(3)
+        ->get();
+
+    return view('welcome', [
+        'landingStats' => [
+            'stockCount' => $stockCount,
+            'latestPriceCount' => $latestPriceCount,
+            'predictionCount' => $predictionCount,
+            'latestTradingDate' => $latestTradingDate,
+        ],
+        'featuredStocks' => $featuredStocks,
+    ]);
 });
 
 // Replace Breeze's default dashboard route with our ArthaPredict Dashboard
@@ -25,6 +55,7 @@ Route::middleware('auth')->group(function () {
     // Stocks
     Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
     Route::get('/stocks/{symbol}', [StockController::class, 'show'])->name('stocks.show');
+    Route::post('/stocks/{symbol}/moving-average', [StockController::class, 'runMovingAverage'])->name('stocks.run_ma');
     Route::get('/api/stocks/{symbol}/chart', [StockController::class, 'getChartData'])->name('api.stocks.chart');
     
     // Watchlist
@@ -38,6 +69,8 @@ Route::middleware('auth')->group(function () {
 // Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::post('/train', [AdminController::class, 'trainModel'])->name('train');
 });
 
 require __DIR__.'/auth.php';
+

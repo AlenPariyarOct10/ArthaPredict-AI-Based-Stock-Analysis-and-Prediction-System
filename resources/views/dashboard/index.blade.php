@@ -39,26 +39,46 @@
 <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Market Trends Chart -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 lg:col-span-2">
-        <h4 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Market Trend Overview</h4>
+        <div class="flex items-center justify-between gap-4 mb-4">
+            <h4 class="text-xl font-semibold text-gray-800 dark:text-white">Market Trend Overview</h4>
+            <span class="text-sm text-gray-500 dark:text-gray-400">
+                {{ $chartStock?->symbol ? "Showing {$chartStock->symbol}" : 'No stock data available' }}
+            </span>
+        </div>
         <div id="market-chart" class="w-full h-80"></div>
     </div>
     
     <!-- AI Predictions Card -->
     <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg p-6 text-white">
         <h4 class="text-xl font-semibold mb-4">AI Top Pick</h4>
+        @php
+            $topPickSymbol = $aiTopPick?->stock?->symbol;
+            $topPickTarget = $aiTopPick?->target_date ? \Carbon\Carbon::parse($aiTopPick->target_date)->format('M d, Y') : null;
+        @endphp
         <div class="mt-4">
             <span class="text-sm font-medium uppercase tracking-wider text-indigo-200">Symbol</span>
-            <div class="text-4xl font-bold mt-1">AAPL</div>
+            <div class="text-4xl font-bold mt-1">{{ $topPickSymbol ?? 'N/A' }}</div>
         </div>
         <div class="mt-6">
-            <span class="text-sm font-medium text-indigo-200">Predicted Trend (LSTM)</span>
+            <span class="text-sm font-medium text-indigo-200">
+                {{ $aiTopPick ? "Predicted Price ({$aiTopPick->model_type})" : 'Predicted Trend' }}
+            </span>
             <div class="flex items-end mt-1">
-                <span class="text-3xl font-bold text-green-300">Bullish</span>
-                <span class="ml-2 mb-1 text-sm text-indigo-100 border-b border-indigo-300">+4.2% in 30 Days</span>
+                <span class="text-3xl font-bold text-green-300">
+                    {{ $aiTopPick ? '$' . number_format((float) $aiTopPick->predicted_price, 2) : 'Pending' }}
+                </span>
+                @if ($topPickTarget)
+                    <span class="ml-2 mb-1 text-sm text-indigo-100 border-b border-indigo-300">{{ $topPickTarget }}</span>
+                @endif
             </div>
         </div>
         <div class="mt-8">
-            <a href="#" class="inline-block bg-white text-indigo-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition shadow-sm">View Full Analysis</a>
+            <a
+                href="{{ $topPickSymbol ? route('stocks.show', $topPickSymbol) : route('stocks.index') }}"
+                class="inline-block bg-white text-indigo-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition shadow-sm"
+            >
+                View Full Analysis
+            </a>
         </div>
     </div>
 </div>
@@ -69,13 +89,26 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Prepare data from PHP variable
         const rawData = @json($marketTrend);
+        const chartContainer = document.querySelector("#market-chart");
         
-        let seriesData = rawData.map(item => {
-            return {
+        let seriesData = rawData
+            .filter(item => item.open !== null && item.high !== null && item.low !== null && item.close !== null)
+            .map(item => ({
                 x: new Date(item.date).getTime(),
-                y: [item.open, item.high, item.low, item.close]
-            };
-        });
+                y: [Number(item.open), Number(item.high), Number(item.low), Number(item.close)]
+            }));
+
+        if (!seriesData.length) {
+            chartContainer.innerHTML = `
+                <div class="h-full flex items-center justify-center text-center text-gray-500 dark:text-gray-400">
+                    <div>
+                        <div class="text-lg font-medium">No market trend data available</div>
+                        <div class="mt-1 text-sm">Add stock price records with OHLC values to render the chart.</div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
 
         // Add apex chart configuration
         var options = {
@@ -105,7 +138,7 @@
             }
         };
 
-        var chart = new ApexCharts(document.querySelector("#market-chart"), options);
+        var chart = new ApexCharts(chartContainer, options);
         chart.render();
         
         // Listen for dark mode toggle to update chart theme
