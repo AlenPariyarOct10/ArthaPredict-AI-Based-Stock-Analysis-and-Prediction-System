@@ -26,13 +26,19 @@ class WatchlistController extends Controller
 
         if ($watchlist) {
             $watchlist->delete();
-            return response()->json(['status' => 'removed', 'message' => 'Removed from watchlist']);
+            if ($request->expectsJson()) {
+                return response()->json(['status' => 'removed', 'message' => 'Removed from watchlist']);
+            }
+            return back()->with('success', 'Removed from watchlist.');
         } else {
             Watchlist::create([
                 'user_id' => $user->id,
                 'stock_id' => $request->stock_id
             ]);
-            return response()->json(['status' => 'added', 'message' => 'Added to watchlist']);
+            if ($request->expectsJson()) {
+                return response()->json(['status' => 'added', 'message' => 'Added to watchlist']);
+            }
+            return back()->with('success', 'Added to watchlist.');
         }
     }
 }
