@@ -144,14 +144,28 @@
                 <span>Watchlist</span>
             </a>
 
-            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('analysis.*') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="javascript:void(0)">
+            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('analysis.index') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="{{ route('analysis.index') }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
                 <span>Analysis</span>
             </a>
 
+            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('feedback.*') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="{{ route('feedback.index') }}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path>
+                </svg>
+                <span>Feedback</span>
+            </a>
+
             @if(Auth::user() && Auth::user()->is_admin)
+            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('admin.feedbacks.*') ? 'nav-active' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' }}" href="{{ route('admin.feedbacks.index') }}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2m10 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m10 0H7"></path>
+                </svg>
+                <span>Client Feedback</span>
+            </a>
+
             <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('admin.dashboard') ? 'nav-active' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' }}" href="{{ route('admin.dashboard') }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
@@ -219,7 +233,7 @@
                                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-foreground hover:bg-muted dark:hover:bg-secondary transition">
                                     Profile Settings
                                 </a>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form method="POST" action="{{ Auth::user()->is_admin ? route('admin.logout') : route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive/10 transition font-medium">
                                         Logout

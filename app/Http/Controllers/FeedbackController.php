@@ -9,8 +9,21 @@ class FeedbackController extends Controller
 {
     public function index()
     {
-        $feedbacks = auth()->user()->feedbacks()->orderBy('created_at', 'desc')->get();
+        $feedbacks = auth()->user()
+            ->feedbacks()
+            ->latest()
+            ->paginate(10);
+
         return view('feedback.index', compact('feedbacks'));
+    }
+
+    public function adminIndex()
+    {
+        $feedbacks = Feedback::with('user')
+            ->latest()
+            ->paginate(12);
+
+        return view('admin.feedbacks.index', compact('feedbacks'));
     }
 
     public function store(Request $request)
@@ -22,6 +35,6 @@ class FeedbackController extends Controller
 
         auth()->user()->feedbacks()->create($validated);
 
-        return redirect()->back()->with('success', 'Feedback submitted successfully.');
+        return redirect()->route('feedback.index')->with('success', 'Feedback submitted successfully.');
     }
 }
