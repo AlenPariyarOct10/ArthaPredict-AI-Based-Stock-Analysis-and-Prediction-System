@@ -63,12 +63,27 @@ Route::middleware('auth')->group(function () {
     Route::post('/watchlist/toggle', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');
     
     // Feedback
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
+    // Analysis
+    Route::get('/analysis', [App\Http\Controllers\AnalysisController::class, 'index'])->name('analysis.index');
+});
+
+// Admin Auth Routes
+Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'create'])->name('login');
+    Route::post('/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'store'])->name('login.store');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/logout', [App\Http\Controllers\Auth\AdminLoginController::class, 'destroy'])->name('logout');
 });
 
 // Admin Routes
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/feedbacks', [FeedbackController::class, 'adminIndex'])->name('feedbacks.index');
     Route::post('/train', [AdminController::class, 'trainModel'])->name('train');
 });
 
