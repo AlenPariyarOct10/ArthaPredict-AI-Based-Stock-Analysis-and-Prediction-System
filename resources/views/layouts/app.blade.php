@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html" class="no-transitions">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +20,76 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <style>
+        /* Custom Theme Colors */
+        :root {
+            --background: #f8fafc; /* slate-50 */
+            --foreground: #0f172a; /* slate-900 */
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --muted: #f1f5f9; /* slate-100 */
+            --muted-foreground: #64748b; /* slate-500 */
+            --border: #e2e8f0; /* slate-200 */
+            --secondary: #f1f5f9; /* slate-100 */
+            --primary: #059669; /* emerald-600 */
+            --destructive: #ef4444; /* red-500 */
+
+            /* Opacity variants */
+            --background-60: rgba(248, 250, 252, 0.6);
+            --muted-50: rgba(241, 245, 249, 0.5);
+            --secondary-50: rgba(241, 245, 249, 0.5);
+            --destructive-10: rgba(239, 68, 68, 0.1);
+        }
+
+        .dark {
+            --background: #0f172a; /* slate-900 */
+            --foreground: #f8fafc; /* slate-50 */
+            --card: #1e293b; /* slate-800 */
+            --card-foreground: #f8fafc;
+            --muted: #1e293b; /* slate-800 */
+            --muted-foreground: #94a3b8; /* slate-400 */
+            --border: #334155; /* slate-700 */
+            --secondary: #334155; /* slate-700 */
+            --primary: #10b981; /* emerald-500 */
+            --destructive: #f87171; /* red-400 */
+
+            /* Opacity variants */
+            --background-60: rgba(15, 23, 42, 0.6);
+            --muted-50: rgba(30, 41, 59, 0.5);
+            --secondary-50: rgba(51, 65, 85, 0.5);
+            --destructive-10: rgba(248, 113, 113, 0.1);
+        }
+
+        /* Utility classes mapping to theme variables */
+        .bg-background { background-color: var(--background) !important; }
+        .text-foreground { color: var(--foreground) !important; }
+        .bg-card { background-color: var(--card) !important; }
+        .bg-muted { background-color: var(--muted) !important; }
+        .text-muted-foreground { color: var(--muted-foreground) !important; }
+        .border-border { border-color: var(--border) !important; }
+        .bg-secondary { background-color: var(--secondary) !important; }
+        .text-destructive { color: var(--destructive) !important; }
+        .bg-input { background-color: var(--card) !important; }
+        .bg-primary { background-color: var(--primary) !important; }
+        .text-primary-foreground { color: #ffffff !important; }
+        .bg-destructive { background-color: var(--destructive) !important; }
+        .text-destructive-foreground { color: #ffffff !important; }
+        .placeholder-muted-foreground::placeholder { color: var(--muted-foreground) !important; }
+
+        /* Opacity & State Variants */
+        .bg-background\/60 { background-color: var(--background-60) !important; }
+        .bg-muted\/50 { background-color: var(--muted-50) !important; }
+        .bg-secondary\/50 { background-color: var(--secondary-50) !important; }
+        .hover\:bg-destructive\/10:hover { background-color: var(--destructive-10) !important; }
+        .hover\:bg-muted:hover { background-color: var(--muted) !important; }
+        .hover\:bg-primary\/80:hover { background-color: var(--primary) !important; opacity: 0.8; }
+        .focus\:bg-primary\/80:focus { background-color: var(--primary) !important; opacity: 0.8; }
+        .active\:bg-primary\/90:active { background-color: var(--primary) !important; opacity: 0.9; }
+        .hover\:bg-destructive\/80:hover { background-color: var(--destructive) !important; opacity: 0.8; }
+        .active\:bg-destructive\/90:active { background-color: var(--destructive) !important; opacity: 0.9; }
+        .focus\:ring-primary:focus { --tw-ring-color: var(--primary) !important; }
+        .focus\:border-primary:focus { border-color: var(--primary) !important; }
+        .focus\:ring-destructive:focus { --tw-ring-color: var(--destructive) !important; }
+
         body {
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
@@ -27,7 +97,14 @@
 
         /* Smooth theme transitions on everything */
         *, *::before, *::after {
-            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, fill 0.2s ease, box-shadow 0.2s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, fill 0.2s ease, stroke 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Prevent transitions during initial page load */
+        .no-transitions *,
+        .no-transitions *::before,
+        .no-transitions *::after {
+            transition: none !important;
         }
 
         /* Scrollbar styling */
@@ -84,6 +161,10 @@
         }
 
         applyThemePreference(getStoredThemePreference());
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.documentElement.classList.remove("no-transitions");
+        });
     </script>
 </head>
 <body class="font-sans antialiased text-foreground bg-background" x-data="{
@@ -100,13 +181,11 @@
 <div class="min-h-screen flex overflow-hidden">
 
     <!-- Sidebar -->
-    <div x-cloak :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed z-50 inset-y-0 left-0 w-64 transition duration-300 transform bg-card dark:bg-card overflow-y-auto lg:translate-x-0 lg:static lg:inset-auto border-r border-border dark:border-border">
+    <div :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed z-50 inset-y-0 left-0 w-64 transition duration-300 transform bg-card dark:bg-card overflow-y-auto lg:translate-x-0 lg:static lg:inset-auto border-r border-border dark:border-border">
         <!-- Logo -->
         <div class="flex items-center justify-between p-6 border-b border-border dark:border-border">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg gradient-accent flex items-center justify-center text-white font-bold">
-                    A
-                </div>
+                <img class="w-8 h-8" src="{{ asset('assets/images/Logo.png') }}" alt="" srcset="">
                 <div>
                     <div class="font-bold text-lg bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                         ArthaPredict
@@ -151,12 +230,21 @@
                 <span>Analysis</span>
             </a>
 
-            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('feedback.*') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="{{ route('feedback.index') }}">
+            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('arthanotes.*') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="{{ route('arthanotes.index') }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
-                <span>Feedback</span>
+                <span>ArthaNotes</span>
             </a>
+
+            @if(Auth::user() && !Auth::user()->is_admin)
+                <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('feedback.*') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}" href="{{ route('feedback.index') }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path>
+                    </svg>
+                    <span>Feedback</span>
+                </a>
+            @endif
 
             @if(Auth::user() && Auth::user()->is_admin)
             <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('admin.feedbacks.*') ? 'nav-active' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' }}" href="{{ route('admin.feedbacks.index') }}">
@@ -164,6 +252,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2m10 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m10 0H7"></path>
                 </svg>
                 <span>Client Feedback</span>
+            </a>
+
+            <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('admin.dataset-import.*') ? 'nav-active' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' }}" href="{{ route('admin.dataset-import.index') }}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                <span>Dataset Import</span>
             </a>
 
             <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('admin.dashboard') ? 'nav-active' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' }}" href="{{ route('admin.dashboard') }}">
@@ -203,10 +298,10 @@
                 <div class="flex items-center gap-6">
                     <!-- Theme Toggle -->
                     <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-muted dark:bg-secondary hover:bg-muted/80 dark:hover:bg-secondary/80 transition text-foreground">
-                        <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="!darkMode" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                         </svg>
-                        <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="darkMode" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </button>

@@ -10,6 +10,8 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArthaNoteController;
+use App\Http\Controllers\DatasetImportController;
 
 Route::get('/', function () {
     $stockCount = Stock::where('is_active', true)->count();
@@ -68,6 +70,16 @@ Route::middleware('auth')->group(function () {
 
     // Analysis
     Route::get('/analysis', [App\Http\Controllers\AnalysisController::class, 'index'])->name('analysis.index');
+
+    // ArthaNotes
+    Route::get('/arthanotes', [ArthaNoteController::class, 'index'])->name('arthanotes.index');
+    Route::get('/arthanotes/{note}', [ArthaNoteController::class, 'show'])->name('arthanotes.show');
+    Route::post('/arthanotes', [ArthaNoteController::class, 'store'])->name('arthanotes.store');
+    Route::delete('/arthanotes/{note}', [ArthaNoteController::class, 'destroy'])->name('arthanotes.destroy');
+    Route::post('/arthanotes/{note}/like', [ArthaNoteController::class, 'toggleLike'])->name('arthanotes.like.toggle');
+    Route::post('/arthanotes/{note}/comments', [ArthaNoteController::class, 'storeComment'])->name('arthanotes.comments.store');
+    Route::patch('/arthanotes/comments/{comment}', [ArthaNoteController::class, 'updateComment'])->name('arthanotes.comments.update');
+    Route::delete('/arthanotes/comments/{comment}', [ArthaNoteController::class, 'destroyComment'])->name('arthanotes.comments.destroy');
 });
 
 // Admin Auth Routes
@@ -84,7 +96,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/feedbacks', [FeedbackController::class, 'adminIndex'])->name('feedbacks.index');
+    Route::get('/feedbacks/{feedback}', [FeedbackController::class, 'adminShow'])->name('feedbacks.show');
+    Route::patch('/feedbacks/{feedback}', [FeedbackController::class, 'adminUpdate'])->name('feedbacks.update');
     Route::post('/train', [AdminController::class, 'trainModel'])->name('train');
+    Route::get('/train/status', [AdminController::class, 'getTrainingStatus'])->name('train.status');
+    Route::get('/dataset-import', [DatasetImportController::class, 'index'])->name('dataset-import.index');
+    Route::post('/dataset-import', [DatasetImportController::class, 'import'])->name('dataset-import.import');
+    Route::get('/dataset-import/sample', [DatasetImportController::class, 'downloadSample'])->name('dataset-import.sample');
 });
 
 require __DIR__.'/auth.php';

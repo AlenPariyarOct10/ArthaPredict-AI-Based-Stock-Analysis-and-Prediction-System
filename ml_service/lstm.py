@@ -73,19 +73,39 @@ class ScratchLSTMRegressor:
         self.by = np.zeros((1, 1))
 
     def _forward(self, sequence):
+        """
+        Forward pass through the LSTM.
+        Required Gates:
+        1. Forget Gate (f_t): Decides what information to discard from the cell state.
+        2. Input Gate (i_t): Decides which values to update in the cell state.
+        3. Cell Candidate (c_bar_t): Creates a vector of new candidate values to be added to the state.
+        4. Output Gate (o_t): Decides what part of the cell state to output.
+        """
         h_prev = np.zeros((self.hidden_size, 1))
         c_prev = np.zeros((self.hidden_size, 1))
         cache = []
 
         for x_t in sequence:
             x_t = np.asarray(x_t, dtype=float).reshape(self.input_size, 1)
+            # Concatenate previous hidden state and current input
             z = np.vstack((h_prev, x_t))
 
+            # 1. Forget Gate: f_t = sigmoid(Wf * [h_prev, x_t] + bf)
             f_t = sigmoid(self.Wf @ z + self.bf)
+            
+            # 2. Input Gate: i_t = sigmoid(Wi * [h_prev, x_t] + bi)
             i_t = sigmoid(self.Wi @ z + self.bi)
+            
+            # 3. Cell Candidate: c_bar_t = tanh(Wc * [h_prev, x_t] + bc)
             c_bar_t = np.tanh(self.Wc @ z + self.bc)
+            
+            # Update Cell State: c_t = f_t * c_prev + i_t * c_bar_t
             c_t = (f_t * c_prev) + (i_t * c_bar_t)
+            
+            # 4. Output Gate: o_t = sigmoid(Wo * [h_prev, x_t] + bo)
             o_t = sigmoid(self.Wo @ z + self.bo)
+            
+            # Final Hidden State: h_t = o_t * tanh(c_t)
             h_t = o_t * np.tanh(c_t)
 
             cache.append({
