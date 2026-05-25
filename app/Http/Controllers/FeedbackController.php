@@ -9,6 +9,10 @@ class FeedbackController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->is_admin) {
+            return redirect()->route('admin.feedbacks.index');
+        }
+
         $feedbacks = auth()->user()
             ->feedbacks()
             ->latest()
@@ -26,8 +30,34 @@ class FeedbackController extends Controller
         return view('admin.feedbacks.index', compact('feedbacks'));
     }
 
+    public function adminShow(Feedback $feedback)
+    {
+        $feedback->load('user');
+
+        return view('admin.feedbacks.show', compact('feedback'));
+    }
+
+    public function adminUpdate(Request $request, Feedback $feedback)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,reviewed,resolved',
+        ]);
+
+        $feedback->update([
+            'status' => $validated['status'],
+        ]);
+
+        return redirect()
+            ->route('admin.feedbacks.show', $feedback)
+            ->with('success', 'Feedback status updated successfully.');
+    }
+
     public function store(Request $request)
     {
+        if (auth()->user()->is_admin) {
+            return redirect()->route('admin.feedbacks.index');
+        }
+
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string'

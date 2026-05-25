@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Stock;
 use App\Models\Feedback;
 use App\Models\StockPrediction;
+use App\Models\ModelTrainingJob;
+use App\Jobs\TrainModelJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -17,8 +19,12 @@ class AdminController extends Controller
         $stocksCount = Stock::count();
         $pendingFeedbackCount = Feedback::where('status', 'pending')->count();
         $stocks = Stock::where('is_active', true)->get();
+        $recentJobs = ModelTrainingJob::with('stock')
+            ->latest()
+            ->take(10)
+            ->get();
         
-        return view('admin.dashboard', compact('usersCount', 'stocksCount', 'pendingFeedbackCount', 'stocks'));
+        return view('admin.dashboard', compact('usersCount', 'stocksCount', 'pendingFeedbackCount', 'stocks', 'recentJobs'));
     }
     
     public function trainModel(Request $request)
@@ -28,42 +34,50 @@ class AdminController extends Controller
         ]);
 
         $stock = Stock::findOrFail($request->stock_id);
-        $symbol = $stock->symbol;
 
-        // Path to your python executable and script
-        $pythonExecutable = 'python';
-        $scriptPath = base_path('ml_service/predict.py');
+        // Check if there is an active job (queued or processing) for this stock
+        $activeJob = ModelTrainingJob::where('stock_id', $stock->id)
+            ->whereIn('status', ['queued', 'processing'])
+            ->first();
 
-        // Execute the python script
-        $command = escapeshellcmd("$pythonExecutable \"$scriptPath\" $symbol");
-        $output = shell_exec($command);
-
-        if (!$output) {
-            return back()->with('error', 'Failed to execute prediction script.');
+        if ($activeJob) {
+            return back()->with('error', "Training is already in progress for {$stock->symbol}.");
         }
 
-        $result = json_decode($output, true);
+        // Create a new ModelTrainingJob record
+        $jobRecord = ModelTrainingJob::create([
+            'stock_id' => $stock->id,
+            'user_id' => auth()->id(),
+            'status' => 'queued',
+        ]);
 
-        if (json_last_error() !== JSON_ERROR_NONE || isset($result['error'])) {
-            $errorMessage = $result['error'] ?? 'Unknown error parsing python script output.';
-            return back()->with('error', 'Training failed: ' . $errorMessage);
-        }
+        // Dispatch the queue job
+        TrainModelJob::dispatch($stock->id, auth()->id(), $jobRecord->id);
 
-        // Delete existing predictions for this stock to insert fresh ones
-        StockPrediction::where('stock_id', $stock->id)->delete();
+        return back()->with('success', "Model training has been successfully queued in the background for {$stock->symbol}.");
+    }
 
-        if (isset($result['predictions']) && is_array($result['predictions'])) {
-            foreach ($result['predictions'] as $prediction) {
-                StockPrediction::create([
-                    'stock_id' => $stock->id,
-                    'model_type' => $prediction['model_type'],
-                    'target_date' => $prediction['target_date'],
-                    'predicted_price' => $prediction['predicted_price'],
-                    'additional_metrics' => $prediction['additional_metrics']
-                ]);
-            }
-        }
+    public function getTrainingStatus()
+    {
+        $recentJobs = ModelTrainingJob::with('stock')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($job) {
+                return [
+                    'id' => $job->id,
+                    'stock_id' => $job->stock_id,
+                    'symbol' => $job->stock->symbol,
+                    'name' => $job->stock->name,
+                    'status' => $job->status,
+                    'error_message' => $job->error_message,
+                    'updated_at' => $job->updated_at->diffForHumans(),
+                    'created_at_formatted' => $job->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
 
-        return back()->with('success', "Model successfully trained and predictions updated for $symbol.");
+        return response()->json([
+            'jobs' => $recentJobs
+        ]);
     }
 }

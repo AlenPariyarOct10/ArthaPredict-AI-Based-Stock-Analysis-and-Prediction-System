@@ -39,4 +39,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feedback::class);
     }
+
+    public function arthaNotes()
+    {
+        return $this->hasMany(ArthaNote::class);
+    }
+
+    public function arthaNoteComments()
+    {
+        return $this->hasMany(ArthaNoteComment::class);
+    }
+
+    public function arthaNoteLikes()
+    {
+        return $this->hasMany(ArthaNoteLike::class);
+    }
 }

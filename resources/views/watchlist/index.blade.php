@@ -44,7 +44,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">{{ $stock->name }}</p>
                 
                 <div class="mt-6 text-3xl font-extrabold text-gray-800 dark:text-white">
-                    ${{ $latest ? number_format($latest->close, 2) : '---' }}
+                    Rs. {{ $latest ? number_format($latest->close, 2) : '---' }}
                 </div>
                 
                 @if($latest)
@@ -55,7 +55,7 @@
                         @else
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
                         @endif
-                        ${{ number_format(abs($change), 2) }}
+                        Rs. {{ number_format(abs($change), 2) }}
                     </span>
                     <span class="ml-2 text-gray-400">Today</span>
                 </div>
