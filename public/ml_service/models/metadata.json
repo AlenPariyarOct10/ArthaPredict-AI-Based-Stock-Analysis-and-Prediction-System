@@ -1,0 +1,101 @@
+{
+  "models": {
+    "AKJCL_lstm": {
+      "path": "ml_service\\models\\lstm\\AKJCL_20260606_221605.pkl",
+      "latest_path": "ml_service\\models\\lstm\\AKJCL_latest.pkl",
+      "fingerprint": "c6db45364e807166",
+      "training_date": "2026-06-06T22:16:05.462236",
+      "metrics": {
+        "mse": 9729.1311,
+        "mae": 71.144,
+        "rmse": 98.6364,
+        "mape": "20.81%",
+        "directional_accuracy": "33.3%",
+        "confidence_score": "79.2%",
+        "training_loss": 0.000825,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "AKJCL_xgboost": {
+      "path": "ml_service\\models\\xgboost\\AKJCL_20260606_221617.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\AKJCL_latest.pkl",
+      "fingerprint": "8174c4ea7502f810",
+      "training_date": "2026-06-06T22:16:17.224428",
+      "metrics": {
+        "mse": 7932.2277,
+        "mae": 58.3518,
+        "rmse": 89.0631,
+        "mape": "15.94%",
+        "directional_accuracy": "46.3%",
+        "confidence_score": "84.1%",
+        "training_loss": 16.426559,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "KKHC_lstm": {
+      "path": "ml_service\\models\\lstm\\KKHC_20260606_223811.pkl",
+      "latest_path": "ml_service\\models\\lstm\\KKHC_latest.pkl",
+      "fingerprint": "9d417f22915e94ae",
+      "training_date": "2026-06-06T22:38:11.546219",
+      "metrics": {
+        "mse": 105.1049,
+        "mae": 6.8942,
+        "rmse": 10.2521,
+        "mape": "2.62%",
+        "directional_accuracy": "32.7%",
+        "confidence_score": "97.4%",
+        "training_loss": 0.00139,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "KKHC_xgboost": {
+      "path": "ml_service\\models\\xgboost\\KKHC_20260606_223822.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\KKHC_latest.pkl",
+      "fingerprint": "50369a1f3abb71ff",
+      "training_date": "2026-06-06T22:38:23.079789",
+      "metrics": {
+        "mse": 88.2843,
+        "mae": 7.2685,
+        "rmse": 9.396,
+        "mape": "2.96%",
+        "directional_accuracy": "33.6%",
+        "confidence_score": "97.0%",
+        "training_loss": 81.889509,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    }
+  },
+  "last_updated": "2026-06-06T22:38:23.079811"
+}

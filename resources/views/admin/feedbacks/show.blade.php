@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6">
     @if(session('success'))
-        <div class="rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+        <div class="rounded-lg border border-blue-300 bg-blue-50 text-blue-700 px-4 py-3 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
             {{ session('success') }}
         </div>
     @endif
@@ -41,7 +41,7 @@
             <div>
                 <p class="text-xs uppercase tracking-wider text-muted-foreground">Status</p>
                 <span class="mt-1 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                    {{ $feedback->status === 'resolved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : '' }}
+                    {{ $feedback->status === 'resolved' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : '' }}
                     {{ $feedback->status === 'reviewed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : '' }}
                     {{ $feedback->status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' : '' }}">
                     {{ ucfirst($feedback->status) }}
@@ -72,9 +72,8 @@
                     <select
                         id="status"
                         name="status"
-                        class="w-full sm:w-52 rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-                        required
-                    >
+                        class="w-full sm:w-52 rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-blue-500"
+                        required>
                         <option value="pending" {{ $feedback->status === 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="reviewed" {{ $feedback->status === 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                         <option value="resolved" {{ $feedback->status === 'resolved' ? 'selected' : '' }}>Resolved</option>

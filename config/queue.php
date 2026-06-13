@@ -73,6 +73,14 @@ return [
             'after_commit' => false,
         ],
 
+        // Dedicated queue for ML training
+        'ml_training' => [
+            'connection' => 'redis',
+            'queue' => 'ml_training',
+            'max_jobs' => 2, // Only process 2 ML jobs concurrently
+            'max_attempts' => 3,
+        ],
+
         'deferred' => [
             'driver' => 'deferred',
         ],

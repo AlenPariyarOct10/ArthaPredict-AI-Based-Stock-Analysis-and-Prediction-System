@@ -27,7 +27,7 @@
         <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
             <div class="flex items-center">
                 <div
-                    class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mr-4">
+                    class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Active Models</p>
-                    <h4 class="text-2xl font-bold text-gray-800 dark:text-white">3 (LSTM, XGB, MA)</h4>
+                    <h4 class="text-2xl font-bold text-gray-800 dark:text-white">4 (LSTM, XGB, RF, MA)</h4>
                 </div>
             </div>
         </div>
@@ -69,16 +69,16 @@
                         <th class="px-6 py-4 font-semibold">Stock</th>
                         <th class="px-6 py-4 font-semibold">LSTM Prediction (1M)</th>
                         <th class="px-6 py-4 font-semibold">XGBoost Prediction (1M)</th>
-                        <th class="px-6 py-4 font-semibold">MA Prediction (1M)</th>
+                        <th class="px-6 py-4 font-semibold">Random Forest (1M)</th>
                         <th class="px-6 py-4 font-semibold text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                     @foreach($stocks as $stock)
                         @php
-                            $lstmPred = $stock->predictions->where('model_type', 'LSTM')->last();
-                            $xgbPred = $stock->predictions->where('model_type', 'XGBoost')->last();
-                            $maPred = $stock->predictions->where('model_type', 'Moving Average')->last();
+                            $lstmPred = $stock->predictions->where('model_type', 'lstm')->last();
+                            $xgbPred = $stock->predictions->where('model_type', 'xgboost')->last();
+                            $rfPred = $stock->predictions->where('model_type', 'random_forest')->last();
                         @endphp
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
                             <td class="px-6 py-4">
@@ -95,7 +95,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($lstmPred)
-                                    <div class="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                    <div class="text-sm font-bold text-blue-600 dark:text-blue-400">
                                         Rs. {{ number_format($lstmPred->predicted_price, 2) }}</div>
                                     <div class="text-xs text-gray-500">{{ $lstmPred->target_date }}</div>
                                 @else
@@ -112,14 +112,15 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($maPred)
-                                    <div class="text-sm font-bold text-purple-600 dark:text-purple-400">
-                                        Rs. {{ number_format($maPred->predicted_price, 2) }}</div>
-                                    <div class="text-xs text-gray-500">{{ $maPred->target_date }}</div>
+                                @if($rfPred)
+                                    <div class="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                        Rs. {{ number_format($rfPred->predicted_price, 2) }}</div>
+                                    <div class="text-xs text-gray-500">{{ $rfPred->target_date }}</div>
                                 @else
                                     <span class="text-xs text-gray-400 italic">No Data</span>
                                 @endif
                             </td>
+
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('stocks.show', $stock->symbol) }}"
                                     class="inline-flex items-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition">
@@ -143,7 +144,7 @@
             <div class="space-y-4">
                 <div class="flex items-start">
                     <div
-                        class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold mr-3 mt-1">
+                        class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold mr-3 mt-1">
                         1</div>
                     <div>
                         <h5 class="font-bold text-gray-700 dark:text-gray-200">LSTM (Scratch Implementation)</h5>
@@ -161,6 +162,15 @@
                             library designed to be highly efficient, flexible and portable.</p>
                     </div>
                 </div>
+                <div class="flex items-start">
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold mr-3 mt-1">
+                        3</div>
+                    <div>
+                        <h5 class="font-bold text-gray-700 dark:text-gray-200">Random Forest</h5>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">An ensemble learning method that constructs multiple decision trees during training and outputs the mean prediction for improved accuracy and reduced overfitting.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -170,7 +180,7 @@
                 @forelse($latestPredictions as $lp)
                     <div class="flex justify-between items-center text-sm">
                         <div class="flex items-center">
-                            <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                            <div class="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
                             <span class="text-gray-600 dark:text-gray-300 font-medium">{{ $lp->model_type }}</span>
                             <span class="text-gray-400 mx-2">for</span>
                             <span class="text-gray-800 dark:text-gray-100 font-bold">{{ $lp->stock->symbol }}</span>

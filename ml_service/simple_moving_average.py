@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
@@ -10,7 +11,25 @@ from sqlalchemy import create_engine
 
 def fetch_stock_data(symbol):
     """Fetch stock prices from MySQL database"""
-    engine = create_engine("mysql+pymysql://root:@127.0.0.1/arthapredict")
+    # Load environment variables from .env if present
+    env_path = Path(__file__).parent.parent / '.env'
+    if env_path.exists():
+        with open(env_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, val = line.split('=', 1)
+                    if key.strip() not in os.environ:
+                        os.environ[key.strip()] = val.strip().strip('"').strip("'")
+
+    db_host = os.environ.get('DB_HOST', '127.0.0.1')
+    db_port = os.environ.get('DB_PORT', '3306')
+    db_database = os.environ.get('DB_DATABASE', 'arthapredict')
+    db_username = os.environ.get('DB_USERNAME', 'root')
+    db_password = os.environ.get('DB_PASSWORD', '')
+
+    engine_url = f"mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_database}"
+    engine = create_engine(engine_url)
     query = """
         SELECT s.symbol, p.date, p.close
         FROM stock_prices p

@@ -9,7 +9,7 @@
         </p>
 
         @if(session('success'))
-            <div class="mt-4 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+            <div class="mt-4 rounded-lg border border-blue-300 bg-blue-50 text-blue-700 px-4 py-3 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                 {{ session('success') }}
             </div>
         @endif
@@ -34,7 +34,7 @@
                     name="subject"
                     value="{{ old('subject') }}"
                     placeholder="Brief title of your feedback"
-                    class="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500"
+                    class="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-blue-500"
                     required
                 >
             </div>
@@ -45,7 +45,7 @@
                     name="message"
                     rows="5"
                     placeholder="Describe your issue, idea, or suggestion"
-                    class="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500"
+                    class="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-blue-500"
                     required
                 >{{ old('message') }}</textarea>
             </div>
@@ -77,7 +77,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <h4 class="font-semibold">{{ $feedback->subject }}</h4>
                             <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                                {{ $feedback->status === 'resolved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : '' }}
+                                {{ $feedback->status === 'resolved' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : '' }}
                                 {{ $feedback->status === 'reviewed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : '' }}
                                 {{ $feedback->status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' : '' }}">
                                 {{ ucfirst($feedback->status) }}

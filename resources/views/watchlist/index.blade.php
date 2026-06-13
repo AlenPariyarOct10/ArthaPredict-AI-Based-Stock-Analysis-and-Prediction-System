@@ -36,7 +36,7 @@
             <a href="{{ route('stocks.show', $stock->symbol) }}" class="flex-grow">
                 <div class="flex items-center justify-between mt-2">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $stock->symbol }}</h4>
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $isPositive ? 'bg-blue-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                         {{ $isPositive ? '+' : '' }}{{ number_format($percent, 2) }}%
                     </span>
                 </div>

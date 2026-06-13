@@ -8,8 +8,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($stocks as $stock)
                 @php
-                    $latest = $stock->prices->last();
-                    $previous = $stock->prices->count() > 1 ? $stock->prices[$stock->prices->count() - 2] : null;
+                    $latest = $stock->prices->first();
+                    $previous = $stock->prices->count() > 1 ? $stock->prices->last() : null;
                     $change = 0;
                     $percent = 0;
                     if ($latest && $previous) {
@@ -24,7 +24,7 @@
                         <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 group-hover:text-blue-500 transition">
                             {{ $stock->symbol }}</h4>
                         <span
-                            class="px-2 py-1 text-xs rounded-full {{ $isPositive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                            class="px-2 py-1 text-xs rounded-full {{ $isPositive ? 'bg-blue-100 text-green-800 dark:bg-blue-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
                             {{ $isPositive ? '+' : '' }}{{ number_format($percent, 2) }}%
                         </span>
                     </div>
@@ -52,37 +52,46 @@
             <div id="market-chart" class="w-full h-80"></div>
         </div>
 
+@auth
         <!-- AI Predictions Card -->
-        <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg p-6 text-white">
+        <div class="bg-primary dark:bg-primary-light shadow-lg p-6 text-white">
             <h4 class="text-xl font-semibold mb-4">AI Top Pick</h4>
             @php
                 $topPickSymbol = $aiTopPick?->stock?->symbol;
                 $topPickTarget = $aiTopPick?->target_date ? \Carbon\Carbon::parse($aiTopPick->target_date)->format('M d, Y') : null;
             @endphp
             <div class="mt-4">
-                <span class="text-sm font-medium uppercase tracking-wider text-indigo-200">Symbol</span>
+                <span class="text-sm font-medium uppercase tracking-wider text-white/80">Symbol</span>
                 <div class="text-4xl font-bold mt-1">{{ $topPickSymbol ?? 'N/A' }}</div>
             </div>
             <div class="mt-6">
-                <span class="text-sm font-medium text-indigo-200">
+                <span class="text-sm font-medium text-white/80">
                     {{ $aiTopPick ? "Predicted Price ({$aiTopPick->model_type})" : 'Predicted Trend' }}
                 </span>
                 <div class="flex items-end mt-1">
-                    <span class="text-3xl font-bold text-green-300">
+                    <span class="text-3xl font-bold text-white">
                         {{ $aiTopPick ? 'Rs.' . number_format((float) $aiTopPick->predicted_price, 2) : 'Pending' }}
                     </span>
                     @if ($topPickTarget)
-                        <span class="ml-2 mb-1 text-sm text-indigo-100 border-b border-indigo-300">{{ $topPickTarget }}</span>
+                        <span class="ml-2 mb-1 text-sm text-white/90 border-b border-white/50">{{ $topPickTarget }}</span>
                     @endif
                 </div>
             </div>
             <div class="mt-8">
                 <a href="{{ $topPickSymbol ? route('stocks.show', $topPickSymbol) : route('stocks.index') }}"
-                    class="inline-block bg-white text-indigo-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition shadow-sm">
+                    class="inline-block bg-white text-primary px-4 py-2 font-medium hover:bg-gray-100 transition shadow-sm">
                     View Full Analysis
                 </a>
             </div>
         </div>
+    @else
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 text-center">
+            <p class="text-gray-700 dark:text-gray-200 mb-4">Sign in to see AI predictions.</p>
+            <a href="{{ route('login') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                Login
+            </a>
+        </div>
+    @endauth
     </div>
 @endsection
 

@@ -25,4 +25,9 @@ class Stock extends Model
     {
         return $this->hasMany(Watchlist::class);
     }
+
+    public function trainedModels()
+    {
+        return $this->hasMany(TrainedModel::class);
+    }
 }
