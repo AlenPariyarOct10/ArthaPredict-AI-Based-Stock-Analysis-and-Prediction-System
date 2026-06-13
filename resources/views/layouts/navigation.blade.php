@@ -7,7 +7,7 @@
      @click.away="open = false"
      class="fixed w-full top-0 z-50 backdrop-blur-sm bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 ">
         <div class="flex justify-between items-center h-16">
             <!-- Logo and Brand -->
             <div class="flex items-center gap-3">
@@ -15,7 +15,7 @@
                     <div class="w-9 h-9 rounded-lg gradient-accent flex items-center justify-center text-white font-bold text-lg">
                         A
                     </div>
-                    <span class="hidden sm:block text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                    <span class="hidden sm:block text-lg font-bold text-primary dark:text-primary-light">
                         ArthaPredict
                     </span>
                 </a>
@@ -26,7 +26,7 @@
                 <a href="{{ route('dashboard') }}"
                     @class([
                         'px-4 py-2 rounded-lg text-sm font-medium transition',
-                        'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' => request()->routeIs('dashboard'),
+                        'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' => request()->routeIs('dashboard'),
                         'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200' => !request()->routeIs('dashboard'),
                     ])>
                     Dashboard
@@ -63,22 +63,16 @@
                 <button
                     @click="darkMode = !darkMode; document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', darkMode)"
                     class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-                    <svg class="w-5 h-5 block dark:hidden text-slate-700" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                    </svg>
-                    <svg class="w-5 h-5 hidden dark:block text-slate-300" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.293 2.293a1 1 0 011.414 0l.707.707a1 1 0 11-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm0 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-2.828 2.828a1 1 0 011.414 0l.707.707a1 1 0 11-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.828-4.828a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm0-4a1 1 0 011 1v1a1 1 0 11-2 0V5a1 1 0 011-1zM5.707 5.707a1 1 0 010 1.414L5 7.828a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zm0 9.586a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM3.707 3.707a1 1 0 011.414 0l.707.707a1 1 0 11-1.414 1.414L3.707 5.12a1 1 0 010-1.414zm0 9.586a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM10 18a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1z" clip-rule="evenodd"></path>
-                    </svg>
+                    <i class="fa-solid fa-moon w-5 h-5 block dark:hidden text-slate-700"></i>
+                    <i class="fa-solid fa-sun w-5 h-5 hidden dark:block text-slate-300"></i>
                 </button>
 
                 <!-- User Dropdown -->
                 <div x-data="{ dropdownOpen: false }" @click.away="dropdownOpen = false" class="relative hidden sm:block">
                     <button
                         @click="dropdownOpen = !dropdownOpen"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <div class="w-8 h-8 rounded-full gradient-accent flex items-center justify-center text-white text-xs font-bold">
-                            {{ substr(Auth::user()->name ?? 'U', 0, 1) }}
-                        </div>
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <img class="w-8 h-8 rounded-full object-cover border border-blue-500/20 shadow-sm" src="{{ Auth::user()->profile_image_url }}" alt="{{ Auth::user()->name ?? 'User' }}">
                         <span class="hidden sm:inline max-w-[120px] truncate">{{ Auth::user()->name ?? 'User' }}</span>
                         <svg class="w-4 h-4" :class="{ 'rotate-180': dropdownOpen }" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -147,9 +141,12 @@
             </div>
 
             <!-- Mobile User Info -->
-            <div class="border-t border-slate-200 dark:border-slate-800 px-4 py-3">
-                <p class="font-medium text-slate-900 dark:text-slate-50 text-sm">{{ Auth::user()->name ?? 'User' }}</p>
-                <p class="text-xs text-slate-600 dark:text-slate-400">{{ Auth::user()->email ?? '' }}</p>
+            <div class="border-t border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+                <img class="w-10 h-10 rounded-full object-cover border border-blue-500/20 shadow-sm" src="{{ Auth::user()->profile_image_url }}" alt="{{ Auth::user()->name ?? 'User' }}">
+                <div>
+                    <p class="font-medium text-slate-900 dark:text-slate-50 text-sm">{{ Auth::user()->name ?? 'User' }}</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">{{ Auth::user()->email ?? '' }}</p>
+                </div>
 
                 <div class="mt-3 space-y-2">
                     <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-lg text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">

@@ -1,0 +1,952 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "mysql.connector",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "mysql.connector",
+        "description": "mysql.connector",
+        "detail": "mysql.connector",
+        "documentation": {}
+    },
+    {
+        "label": "Error",
+        "importPath": "mysql.connector",
+        "description": "mysql.connector",
+        "isExtraImport": true,
+        "detail": "mysql.connector",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "pickle",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pickle",
+        "description": "pickle",
+        "detail": "pickle",
+        "documentation": {}
+    },
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "DatabaseConnection",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "importPath": "db",
+        "description": "db",
+        "isExtraImport": true,
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "warnings",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "warnings",
+        "description": "warnings",
+        "detail": "warnings",
+        "documentation": {}
+    },
+    {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
+        "label": "train_random_forest_and_forecast",
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "isExtraImport": true,
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib",
+        "description": "matplotlib",
+        "detail": "matplotlib",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "create_engine",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "field",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "DatabaseConnection",
+        "kind": 6,
+        "importPath": "db",
+        "description": "db",
+        "peekOfCode": "class DatabaseConnection:\n    \"\"\"Database connection handler for direct MySQL access from Python scripts.\"\"\"\n    def __init__(self):\n        self.connection = None\n        self.config = {\n            'host': os.getenv('DB_HOST', '127.0.0.1'),\n            'port': int(os.getenv('DB_PORT', '3306')),\n            'database': os.getenv('DB_DATABASE', 'arthapredict'),\n            'user': os.getenv('DB_USERNAME', 'root'),\n            'password': os.getenv('DB_PASSWORD', ''),",
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "register_model_in_db",
+        "kind": 2,
+        "importPath": "db",
+        "description": "db",
+        "peekOfCode": "def register_model_in_db(symbol: str, model_type: str, model_path: str, \n                          latest_path: str, fingerprint: str, training_date: str,\n                          data_length: int, config: Dict, metrics: Dict) -> Optional[int]:\n    \"\"\"\n    Convenience function to register a model in the database.\n    Args:\n        symbol: Stock symbol\n        model_type: Type of model (lstm, xgboost, etc.)\n        model_path: Path to the saved model file\n        latest_path: Path to the latest model file",
+        "detail": "db",
+        "documentation": {}
+    },
+    {
+        "label": "ModelRegistry",
+        "kind": 6,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "class ModelRegistry:\n    \"\"\"Persistent storage for trained models with versioning and fingerprinting.\"\"\"\n    def __init__(self, model_dir: str = None):\n        # Use absolute path based on script location if not provided\n        if model_dir is None:\n            script_dir = Path(__file__).resolve().parent\n            model_dir = script_dir / \"models\"\n        self.model_dir = Path(model_dir).resolve()\n        self.lstm_dir = self.model_dir / \"lstm\"\n        self.metadata_file = self.model_dir / \"metadata.json\"",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "MinMaxScaler1D",
+        "kind": 6,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "class MinMaxScaler1D:\n    \"\"\"\n    Min-Max normaliser for a 1-D price series → maps values into [0, 1].\n    \"\"\"\n    def __init__(self):\n        self.data_min = None\n        self.data_max = None\n        self.scale = None\n    def fit(self, values):\n        values = np.asarray(values, dtype=float).reshape(-1)",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "ScratchLSTMRegressor",
+        "kind": 6,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "class ScratchLSTMRegressor:\n    \"\"\"\n    Enhanced LSTM regressor with better architecture for directional accuracy.\n    Uses multi-feature input and dropout-like regularization.\n    \"\"\"\n    def __init__(\n        self,\n        input_size=3,  # Changed from 1 to 3 for multi-feature input\n        hidden_size=32,\n        learning_rate=0.005,",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "sigmoid",
+        "kind": 2,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "def sigmoid(x):\n    \"\"\"Numerically stable sigmoid — clips input to [-50, 50] to prevent overflow.\"\"\"\n    return 1.0 / (1.0 + np.exp(-np.clip(x, -50, 50)))\n# ──────────────────────────────────────────────────────────────────────────────\n# UTILITY: SCALER\n# ──────────────────────────────────────────────────────────────────────────────\nclass MinMaxScaler1D:\n    \"\"\"\n    Min-Max normaliser for a 1-D price series → maps values into [0, 1].\n    \"\"\"",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "create_sequences",
+        "kind": 2,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "def create_sequences(values, sequence_length):\n    \"\"\"\n    Convert a 1-D price series into supervised (X, y) pairs for LSTM training.\n    Enhanced with multi-feature input for better directional accuracy.\n    Features per timestep:\n    - Normalized price\n    - Price change (momentum)\n    - Price velocity (acceleration)\n    \"\"\"\n    values = np.asarray(values, dtype=float).reshape(-1)",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "train_and_forecast",
+        "kind": 2,
+        "importPath": "lstm",
+        "description": "lstm",
+        "peekOfCode": "def train_and_forecast(\n    close_prices,\n    symbol=\"UNKNOWN\",\n    sequence_length=20,\n    hidden_size=32,\n    epochs=200,\n    learning_rate=0.005,\n    force_retrain=False,\n    use_cache=False,\n    cached_only=False,",
+        "detail": "lstm",
+        "documentation": {}
+    },
+    {
+        "label": "ModelRegistry",
+        "kind": 6,
+        "importPath": "model_persistence",
+        "description": "model_persistence",
+        "peekOfCode": "class ModelRegistry:\n    \"\"\"\n    Persistent storage for trained models with versioning and fingerprinting.\n    Directory structure:\n    models/\n    ├── lstm/\n    │   ├── NABIL_20241215_170523.pkl\n    │   ├── NABIL_20241216_091234.pkl\n    │   └── latest -> NABIL_20241216_091234.pkl\n    ├── xgboost/",
+        "detail": "model_persistence",
+        "documentation": {}
+    },
+    {
+        "label": "get_stock_id",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def get_stock_id(symbol, engine):\n    query = text(\"\"\"\n        SELECT id FROM stocks WHERE symbol = :symbol\n    \"\"\")\n    result = pd.read_sql(query, engine, params={\"symbol\": symbol})\n    if result.empty:\n        return None\n    return int(result.iloc[0]['id'])\ndef load_data(symbol, engine):\n    \"\"\"",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "load_data",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def load_data(symbol, engine):\n    \"\"\"\n    Load OHLCV data for a stock symbol from the arthapredict database.\n    SECURITY FIX: Uses SQLAlchemy text() with a named bound parameter (:symbol)\n    instead of f-string interpolation, preventing SQL injection attacks.\n    The WHERE clause is now parameterised — the driver escapes the symbol value\n    before it reaches the database engine.\n    \"\"\"\n    query = text(\"\"\"\n        SELECT p.date, p.open, p.high, p.low, p.close, p.volume",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "clean_data",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def clean_data(df):\n    \"\"\"\n    Coerce types, sort chronologically, and fill gaps without dropping rows.\n    Missing-value strategy: forward-fill → backward-fill → linear interpolation.\n    This preserves the exact row count, which is required for consistent\n    feature-array alignment later in the pipeline.\n    \"\"\"\n    sys.stderr.write(f\"--- DATASET SHAPE BEFORE PROCESSING: {df.shape} ---\\n\")\n    sys.stderr.write(\"--- SAMPLE (first 5 rows, before cleaning) ---\\n\")\n    sys.stderr.write(str(df.head()) + \"\\n\")",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "engineer_features",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def engineer_features(df):\n    \"\"\"\n    Add price-derived technical features to the dataframe.\n    Features added:\n        price_change  : close − open  (intra-day move)\n        returns       : daily percentage change in close price\n        SMA_5/10/20   : simple moving averages (trend proxies)\n        rolling_std   : 10-day close std deviation (volatility proxy)\n    min_periods=1 ensures no NaN rows are introduced for the rolling windows,\n    so the dataframe row count is unchanged after this step.",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "preprocess_data",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def preprocess_data(df):\n    \"\"\"\n    Build and scale the feature matrix and construct the supervised target.\n    NOTE: X_scaled is currently unused by the LSTM and XGBoost calls below\n    (both models operate on the raw close-price series and build their own\n    internal feature representations).  The feature matrix is retained here\n    for forward compatibility — a future improvement would pass X_scaled into\n    XGBoost for richer multivariate prediction.\n    Target construction:\n        target[t] = close[t+1]  (next-day close price)",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "train_ma_model",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def train_ma_model(df, window=20):\n    \"\"\"\n    Evaluate the Moving Average as a 1-step-ahead baseline on the full history.\n    Prediction at time t: mean of the previous `window` close prices.\n    The shift(1) ensures no data leakage (we use past values only).\n    MSE and R² are reported on all rows where a prediction is available.\n    NOTE: In-sample evaluation is acceptable HERE because MA is a non-parametric\n    baseline — it has no trainable parameters that could overfit to the training\n    data.  The comparison against LSTM / XGBoost is still meaningful since those\n    models ARE evaluated on a held-out validation set.",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "forecast_ma",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def forecast_ma(df, days=30, window=20):\n    \"\"\"\n    30-day forecast using Holt's Double Exponential Smoothing.\n    PREVIOUS ISSUE — FIXED:\n    Old implementation: recursive simple moving average.\n        history ← last `window` real prices\n        for each step: pred = mean(history[-window:]); history.append(pred)\n    This is MATHEMATICALLY GUARANTEED to converge to a flat line because\n    each appended prediction is the mean of a window that increasingly\n    consists of predictions rather than real prices.  By step ~20 the",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "update_progress",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def update_progress(engine, job_id, stage, processed_rows, total_rows):\n    if not job_id:\n        return\n    try:\n        with engine.connect() as conn:\n            conn.execute(\n                text(\"\"\"\n                    UPDATE model_training_jobs\n                    SET current_stage = :stage,\n                        processed_rows = :processed_rows,",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "def main():\n    if len(sys.argv) < 2:\n        print(json.dumps({\"error\": \"Stock symbol required\"}))\n        sys.exit(1)\n    symbol = sys.argv[1]\n    job_id = None\n    if len(sys.argv) > 2:\n        try:\n            job_id = int(sys.argv[2])\n        except ValueError:",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "_SCRIPT_DIR",
+        "kind": 5,
+        "importPath": "predict",
+        "description": "predict",
+        "peekOfCode": "_SCRIPT_DIR = Path(__file__).resolve().parent\nif str(_SCRIPT_DIR) not in sys.path:\n    sys.path.insert(0, str(_SCRIPT_DIR))\ntry:\n    import numpy as np\n    import pandas as pd\n    from datetime import timedelta\n    from sqlalchemy import create_engine, text\n    from sklearn.preprocessing import StandardScaler\n    from sklearn.metrics import mean_squared_error, r2_score",
+        "detail": "predict",
+        "documentation": {}
+    },
+    {
+        "label": "RandomForestModelRegistry",
+        "kind": 6,
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "peekOfCode": "class RandomForestModelRegistry:\n    \"\"\"Persistent storage for Random Forest models with versioning and fingerprinting.\"\"\"\n    def __init__(self, model_dir: str = None):\n        if model_dir is None:\n            script_dir = Path(__file__).resolve().parent\n            model_dir = script_dir / \"models\"\n        self.model_dir = Path(model_dir).resolve()\n        self.rf_dir = self.model_dir / \"random_forest\"\n        self.metadata_file = self.model_dir / \"metadata.json\"\n        self.rf_dir.mkdir(parents=True, exist_ok=True)",
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "TechnicalIndicators",
+        "kind": 6,
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "peekOfCode": "class TechnicalIndicators:\n    \"\"\"Comprehensive technical indicators for better predictions.\"\"\"\n    @staticmethod\n    def calculate_rsi(prices, period=14):\n        \"\"\"Relative Strength Index - momentum indicator.\"\"\"\n        deltas = np.diff(prices)\n        seed = deltas[:period+1]\n        up = seed[seed >= 0].sum() / period\n        down = -seed[seed < 0].sum() / period\n        rs = up / down if down != 0 else 100",
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "ScratchRandomForestRegressor",
+        "kind": 6,
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "peekOfCode": "class ScratchRandomForestRegressor:\n    \"\"\"\n    Optimized Random Forest regressor with:\n    - Better tree splitting criteria\n    - Feature bagging\n    - Out-of-bag error estimation\n    - Improved prediction aggregation\n    \"\"\"\n    def __init__(self, n_estimators=200, max_depth=15, min_samples_split=5,\n                 min_samples_leaf=2, max_features=\"sqrt\", bootstrap=True,",
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "create_enhanced_features",
+        "kind": 2,
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "peekOfCode": "def create_enhanced_features(close_prices, high_prices=None, low_prices=None, volume=None):\n    \"\"\"\n    Create comprehensive feature set for better predictions.\n    Features include:\n    1. Price-based features (returns, log returns)\n    2. Technical indicators (RSI, MACD, Bollinger Bands)\n    3. Statistical features (mean, std, skewness, kurtosis)\n    4. Trend features (moving averages, trend strength)\n    5. Volatility features (ATR, historical volatility)\n    6. Cycle features (sin/cos of position in trend)",
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "train_random_forest_and_forecast",
+        "kind": 2,
+        "importPath": "random_forest",
+        "description": "random_forest",
+        "peekOfCode": "def train_random_forest_and_forecast(\n    close_prices,\n    symbol=\"UNKNOWN\",\n    forecast_horizon=30,\n    n_estimators=200,\n    max_depth=15,\n    force_retrain=False,\n    use_cache=False,\n    cached_only=False,\n    progress_callback=None",
+        "detail": "random_forest",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_stock_data",
+        "kind": 2,
+        "importPath": "simple_moving_average",
+        "description": "simple_moving_average",
+        "peekOfCode": "def fetch_stock_data(symbol):\n    \"\"\"Fetch stock prices from MySQL database\"\"\"\n    # Load environment variables from .env if present\n    env_path = Path(__file__).parent.parent / '.env'\n    if env_path.exists():\n        with open(env_path, 'r') as f:\n            for line in f:\n                line = line.strip()\n                if line and not line.startswith('#') and '=' in line:\n                    key, val = line.split('=', 1)",
+        "detail": "simple_moving_average",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_moving_averages",
+        "kind": 2,
+        "importPath": "simple_moving_average",
+        "description": "simple_moving_average",
+        "peekOfCode": "def calculate_moving_averages(df):\n    \"\"\"Calculate SMA and EMA for trend visualization\"\"\"\n    df = df.sort_values('date')\n    df['SMA_20'] = df['close'].rolling(window=20, min_periods=1).mean()\n    df['SMA_50'] = df['close'].rolling(window=50, min_periods=1).mean()\n    df['EMA_20'] = df['close'].ewm(span=20, adjust=False).mean()\n    return df\ndef plot_trend(df, symbol, output_path=None):\n    \"\"\"Plot closing price with Moving Averages and save as PNG\"\"\"\n    plt.figure(figsize=(12,6))",
+        "detail": "simple_moving_average",
+        "documentation": {}
+    },
+    {
+        "label": "plot_trend",
+        "kind": 2,
+        "importPath": "simple_moving_average",
+        "description": "simple_moving_average",
+        "peekOfCode": "def plot_trend(df, symbol, output_path=None):\n    \"\"\"Plot closing price with Moving Averages and save as PNG\"\"\"\n    plt.figure(figsize=(12,6))\n    plt.plot(df['date'], df['close'], label='Close Price', color='blue')\n    plt.plot(df['date'], df['SMA_20'], label='SMA 20', color='orange')\n    plt.plot(df['date'], df['SMA_50'], label='SMA 50', color='green')\n    plt.plot(df['date'], df['EMA_20'], label='EMA 20', color='red')\n    plt.title(f'{symbol} Price Trend with Moving Averages')\n    plt.xlabel('Date')\n    plt.ylabel('Price')",
+        "detail": "simple_moving_average",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "simple_moving_average",
+        "description": "simple_moving_average",
+        "peekOfCode": "def main():\n    if len(sys.argv) < 2:\n        print(json.dumps({\"error\": \"Usage: python moving_average_trend.py <SYMBOL> [OUTPUT_PATH]\"}))\n        sys.exit(1)\n    symbol = sys.argv[1].upper()\n    output_path = sys.argv[2] if len(sys.argv) > 2 else None\n    df = fetch_stock_data(symbol)\n    if df.empty:\n        print(json.dumps({\"error\": f\"No data found for symbol: {symbol}\"}))\n        sys.exit(1)",
+        "detail": "simple_moving_average",
+        "documentation": {}
+    },
+    {
+        "label": "test_directional_accuracy_calculation",
+        "kind": 2,
+        "importPath": "test_directional_accuracy",
+        "description": "test_directional_accuracy",
+        "peekOfCode": "def test_directional_accuracy_calculation():\n    \"\"\"Test the corrected directional accuracy calculation.\"\"\"\n    print(\"=\" * 60)\n    print(\"Testing Directional Accuracy Calculation\")\n    print(\"=\" * 60)\n    # Test case 1: Perfect directional prediction\n    actual = np.array([100, 105, 103, 108, 110])\n    predicted = np.array([100, 106, 102, 109, 111])\n    # Both should show same direction pattern:\n    # actual:     +5, -2, +5, +2",
+        "detail": "test_directional_accuracy",
+        "documentation": {}
+    },
+    {
+        "label": "demonstrate_old_vs_new_calculation",
+        "kind": 2,
+        "importPath": "test_directional_accuracy",
+        "description": "test_directional_accuracy",
+        "peekOfCode": "def demonstrate_old_vs_new_calculation():\n    \"\"\"Show why the old calculation was wrong.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"Demonstration: Old vs New Calculation\")\n    print(\"=\" * 60)\n    actual = np.array([100, 105, 103, 108, 110])\n    predicted = np.array([100, 106, 102, 109, 111])\n    # OLD METHOD (WRONG)\n    actual_changes_old = np.diff(actual)\n    predicted_changes_old = predicted[1:] - actual[:-1]",
+        "detail": "test_directional_accuracy",
+        "documentation": {}
+    },
+    {
+        "label": "test_feature_improvements",
+        "kind": 2,
+        "importPath": "test_directional_accuracy",
+        "description": "test_directional_accuracy",
+        "peekOfCode": "def test_feature_improvements():\n    \"\"\"Show impact of enhanced features.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"Feature Improvements\")\n    print(\"=\" * 60)\n    print(\"\\nLSTM Features:\")\n    print(\"  OLD: 1 feature (normalized price)\")\n    print(\"  NEW: 3 features (price, momentum, acceleration)\")\n    print(\"  Impact: Learns directional patterns better\")\n    print(\"\\nXGBoost Features:\")",
+        "detail": "test_directional_accuracy",
+        "documentation": {}
+    },
+    {
+        "label": "expected_improvements",
+        "kind": 2,
+        "importPath": "test_directional_accuracy",
+        "description": "test_directional_accuracy",
+        "peekOfCode": "def expected_improvements():\n    \"\"\"Show expected metric improvements.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"Expected Improvements\")\n    print(\"=\" * 60)\n    print(\"\\nBEFORE:\")\n    print(\"  Directional Accuracy: 45-55% (wrong calculation + weak features)\")\n    print(\"  MAPE: 5-10%\")\n    print(\"  Confidence: 50-60%\")\n    print(\"\\nAFTER:\")",
+        "detail": "test_directional_accuracy",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingProgressBar",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class TrainingProgressBar:\n    \"\"\"\n    Terminal progress bar for training visualization.\n    No external dependencies — pure stdlib.\n    Example output:\n    Training  [████████████░░░░░░░░]  60%  Epoch 60/100\n    Train Loss: 0.002341  Val Loss: 0.003120  ETA: 0:00:23\n    \"\"\"\n    BAR_WIDTH = 30\n    FILL_CHAR  = \"█\"",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "UniversalModelConfig",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class UniversalModelConfig:\n    \"\"\"Configuration for the universal prediction model.\"\"\"\n    # Model architecture\n    embedding_dim: int = 8          # Size of stock embedding vector\n    sequence_length: int = 20       # Number of past days to look at\n    hidden_size: int = 64           # LSTM hidden units\n    num_layers: int = 2             # Number of LSTM layers\n    # Training\n    learning_rate: float = 0.001\n    epochs: int = 100",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "MultiStockDataLoader",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class MultiStockDataLoader:\n    \"\"\"\n    Load and prepare data from multiple stocks for universal model training.\n    ACADEMIC NOTE:\n    This creates a unified dataset where each sample includes:\n    1. Price sequence (the actual price data)\n    2. Stock ID (which stock this comes from)\n    The model learns to use both signals.\n    \"\"\"\n    def __init__(self, config: UniversalModelConfig):",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "UniversalStockPredictor",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class UniversalStockPredictor:\n    \"\"\"\n    Neural network that predicts stock prices using:\n    1. Price sequence (LSTM)\n    2. Stock embedding (learned per-stock representation)\n    ACADEMIC EXPLANATION:\n    The stock embedding allows the model to learn that \"Stock A tends to be volatile\"\n    while \"Stock B tends to follow trends\" without having separate parameters for\n    each stock. This is called \"parameter sharing\" or \"multi-task learning.\"\n    Architecture:",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "UniversalModelForecaster",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class UniversalModelForecaster:\n    \"\"\"\n    Generate forecasts using the trained universal model.\n    \"\"\"\n    def __init__(self, model: UniversalStockPredictor, data_loader: MultiStockDataLoader):\n        self.model = model\n        self.data_loader = data_loader\n    def predict_next_day(self, symbol: str, recent_prices: np.ndarray) -> float:\n        \"\"\"Predict next day's price for a specific stock.\"\"\"\n        if symbol not in self.data_loader.scalers:",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "ModelComparison",
+        "kind": 6,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "class ModelComparison:\n    \"\"\"\n    Compare universal model vs individual models.\n    ACADEMIC VALUE:\n    This provides the empirical evidence for your thesis comparing\n    the two approaches.\n    \"\"\"\n    @staticmethod\n    def compare_predictions(symbol: str,\n                           universal_forecast: np.ndarray,",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "def main():\n    \"\"\"\n    Main entry point for training and using the universal model.\n    Usage examples:\n        # Train on all stocks\n        python universal_model.py --train\n        # Train on specific stocks\n        python universal_model.py --train --symbols NABIL,SBIBANK,NIFRA\n        # Predict for a stock\n        python universal_model.py --predict --symbol NABIL",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "_SCRIPT_DIR",
+        "kind": 5,
+        "importPath": "universal_model",
+        "description": "universal_model",
+        "peekOfCode": "_SCRIPT_DIR = Path(__file__).resolve().parent\nif str(_SCRIPT_DIR) not in sys.path:\n    sys.path.insert(0, str(_SCRIPT_DIR))\n# Import from existing modules\nfrom db import DatabaseConnection, register_model_in_db\n# Suppress warnings for cleaner output\nimport warnings\nwarnings.filterwarnings('ignore')\n# =============================================================================\n# PROGRESS BAR UTILITY",
+        "detail": "universal_model",
+        "documentation": {}
+    },
+    {
+        "label": "XGBoostModelRegistry",
+        "kind": 6,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "class XGBoostModelRegistry:\n    \"\"\"Persistent storage for XGBoost models with versioning and fingerprinting.\"\"\"\n    def __init__(self, model_dir: str = None):\n        # Use absolute path based on script location if not provided\n        if model_dir is None:\n            script_dir = Path(__file__).resolve().parent\n            model_dir = script_dir / \"models\"\n        self.model_dir = Path(model_dir).resolve()\n        self.xgb_dir = self.model_dir / \"xgboost\"\n        self.metadata_file = self.model_dir / \"metadata.json\"",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "TreeNode",
+        "kind": 6,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "class TreeNode:\n    def __init__(self, feature_index=None, threshold=None, left=None, right=None, value=None):\n        self.feature_index = feature_index\n        self.threshold = threshold\n        self.left = left\n        self.right = right\n        self.value = value\n    def is_leaf(self):\n        return self.value is not None\nclass RegressionTree:",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "RegressionTree",
+        "kind": 6,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "class RegressionTree:\n    \"\"\"\n    Enhanced regression tree with better splitting criteria for directional accuracy.\n    \"\"\"\n    def __init__(self, max_depth=5, min_samples_split=5, lambda_reg=1.0, gamma=0.0):\n        self.max_depth = max_depth\n        self.min_samples_split = min_samples_split\n        self.lambda_reg = lambda_reg\n        self.gamma = gamma\n        self.root = None",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "ScratchXGBoostRegressor",
+        "kind": 6,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "class ScratchXGBoostRegressor:\n    \"\"\"\n    Enhanced XGBoost regressor optimized for directional accuracy.\n    \"\"\"\n    def __init__(self, n_estimators=150, learning_rate=0.05, max_depth=5,\n                 min_samples_split=4, lambda_reg=1.0, gamma=0.0):\n        self.n_estimators = n_estimators\n        self.learning_rate = learning_rate\n        self.max_depth = max_depth  # Increased default depth\n        self.min_samples_split = min_samples_split",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_directional_accuracy",
+        "kind": 2,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "def calculate_directional_accuracy(y_true, y_pred):\n    \"\"\"\n    Calculate directional accuracy correctly with shape handling.\n    Directional accuracy = % of times the model correctly predicts\n    whether the price will go UP or DOWN compared to consecutive predictions.\n    FIXED: Compares sign(diff(actual)) with sign(diff(predicted))\n    \"\"\"\n    # Convert to numpy arrays\n    y_true = np.asarray(y_true, dtype=float).flatten()\n    y_pred = np.asarray(y_pred, dtype=float).flatten()",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_mape",
+        "kind": 2,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "def calculate_mape(y_true, y_pred):\n    \"\"\"Calculate Mean Absolute Percentage Error.\"\"\"\n    y_true = np.asarray(y_true, dtype=float).flatten()\n    y_pred = np.asarray(y_pred, dtype=float).flatten()\n    # Ensure same length\n    min_len = min(len(y_true), len(y_pred))\n    y_true = y_true[:min_len]\n    y_pred = y_pred[:min_len]\n    # Avoid division by zero\n    mask = np.abs(y_true) > 1e-8",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_metrics",
+        "kind": 2,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "def calculate_metrics(y_true, y_pred):\n    \"\"\"\n    Calculate all metrics with proper shape handling.\n    Returns dictionary of metrics.\n    \"\"\"\n    y_true = np.asarray(y_true, dtype=float).flatten()\n    y_pred = np.asarray(y_pred, dtype=float).flatten()\n    # Ensure same length\n    min_len = min(len(y_true), len(y_pred))\n    y_true = y_true[:min_len]",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "train_xgboost_and_forecast",
+        "kind": 2,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "def train_xgboost_and_forecast(\n    close_prices,\n    symbol=\"UNKNOWN\",\n    forecast_horizon=30,\n    n_estimators=150,\n    force_retrain=False,\n    use_cache=False,\n    cached_only=False,\n    progress_callback=None\n):",
+        "detail": "xgboost",
+        "documentation": {}
+    },
+    {
+        "label": "_ROLLING_WINDOW",
+        "kind": 5,
+        "importPath": "xgboost",
+        "description": "xgboost",
+        "peekOfCode": "_ROLLING_WINDOW = 20  # Increased window for better statistics\ndef _compute_features_from_history(history):\n    \"\"\"\n    Compute enhanced feature vector from price history.\n    Focuses on directional indicators and momentum.\n    \"\"\"\n    history = np.asarray(history, dtype=float)\n    feats = []\n    # 1. Price lags\n    for lag in _LAGS:",
+        "detail": "xgboost",
+        "documentation": {}
+    }
+]

@@ -130,6 +130,58 @@ class ArthaNoteController extends Controller
         return back()->with('success', 'ArthaNote deleted successfully.');
     }
 
+    // Show edit form for authors
+    public function edit(ArthaNote $note)
+    {
+        abort_unless($note->user_id === auth()->id(), 403);
+        $note->load(['user', 'likes', 'comments.user', 'comments.replies.user']);
+        return view('arthanotes.edit', compact('note'));
+    }
+
+    // Update note after edit
+    public function update(Request $request, ArthaNote $note)
+    {
+        abort_unless($note->user_id === auth()->id(), 403);
+
+        $validated = $request->validate([
+            'type' => 'required|in:insight,market_analysis,educational_note',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'image' => 'nullable|image|max:4096',
+            'is_pinned' => 'nullable|boolean',
+        ]);
+
+        // Handle image replacement
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($note->image_path) {
+                \Illuminate\Support\Facades\Storage::delete($note->image_path);
+            }
+            $imagePath = $request->file('image')->store('arthanotes', 'public');
+        } else {
+            $imagePath = $note->image_path;
+        }
+
+        // Extract hashtags from content
+        preg_match_all('/#([A-Za-z0-9_]+)/', $validated['content'], $matches);
+        $hashtags = collect($matches[1] ?? [])
+            ->map(fn ($tag) => strtolower((string) $tag))
+            ->unique()
+            ->values()
+            ->all();
+
+        $note->update([
+            'type' => $validated['type'],
+            'title' => $validated['title'],
+            'content' => $this->sanitizeRichText($validated['content']),
+            'image_path' => $imagePath,
+            'is_pinned' => auth()->user()?->is_admin ? (bool) ($validated['is_pinned'] ?? false) : $note->is_pinned,
+            'hashtags' => $hashtags,
+        ]);
+
+        return redirect()->route('arthanotes.show', $note)->with('success', 'ArthaNote updated successfully.');
+    }
+
     public function storeComment(Request $request, ArthaNote $note)
     {
         $validated = $request->validate([

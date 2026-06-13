@@ -12,6 +12,7 @@ class AnalysisController extends Controller
     {
         // Fetch stocks with their latest predictions
         $stocks = Stock::where('is_active', true)
+            ->whereHas('predictions')
             ->with(['predictions' => function ($query) {
                 $query->orderBy('target_date', 'asc');
             }])

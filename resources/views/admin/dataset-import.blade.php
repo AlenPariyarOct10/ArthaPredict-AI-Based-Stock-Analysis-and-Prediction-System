@@ -21,7 +21,7 @@
 
     <!-- Alert Messages -->
     @if(session('success'))
-        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg relative" role="alert">
+        <div class="bg-blue-100 dark:bg-blue-900/30 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg relative" role="alert">
             <span class="block sm:inline font-medium">{{ session('success') }}</span>
         </div>
     @endif
@@ -108,7 +108,7 @@
                             <th scope="col" class="px-6 py-3">Trading Date</th>
                             <th scope="col" class="px-6 py-3 text-center">Status</th>
                             <th scope="col" class="px-6 py-3 text-right">Total Rows</th>
-                            <th scope="col" class="px-6 py-3 text-right text-emerald-600 dark:text-emerald-400">Imported</th>
+                            <th scope="col" class="px-6 py-3 text-right text-blue-600 dark:text-blue-400">Imported</th>
                             <th scope="col" class="px-6 py-3 text-right text-amber-600 dark:text-amber-400">Skipped</th>
                             <th scope="col" class="px-6 py-3 text-right text-red-600 dark:text-red-400">Errors</th>
                             <th scope="col" class="px-6 py-3">Imported By</th>
@@ -136,7 +136,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $import->trading_date->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if($import->status === 'completed')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-green-800 dark:bg-blue-900/30 dark:text-green-400">
                                             Completed
                                         </span>
                                     @elseif($import->status === 'partial')
@@ -150,7 +150,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right whitespace-nowrap">{{ number_format($import->total_rows) }}</td>
-                                <td class="px-6 py-4 text-right whitespace-nowrap font-medium text-emerald-600 dark:text-emerald-400">{{ number_format($import->imported_rows) }}</td>
+                                <td class="px-6 py-4 text-right whitespace-nowrap font-medium text-blue-600 dark:text-blue-400">{{ number_format($import->imported_rows) }}</td>
                                 <td class="px-6 py-4 text-right whitespace-nowrap text-amber-600 dark:text-amber-400">{{ number_format($import->skipped_rows) }}</td>
                                 <td class="px-6 py-4 text-right whitespace-nowrap text-red-600 dark:text-red-400 font-semibold">{{ number_format($import->error_rows) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $import->user->name }}</td>

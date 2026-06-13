@@ -1,0 +1,799 @@
+{
+  "models": {
+    "AKPL_lstm": {
+      "path": "ml_service\\models\\lstm\\AKPL_20260607_074452.pkl",
+      "latest_path": "ml_service\\models\\lstm\\AKPL_latest.pkl",
+      "fingerprint": "948c31309b43af61",
+      "training_date": "2026-06-07T07:44:52.017888",
+      "metrics": {
+        "mse": 47.0875,
+        "mae": 4.7589,
+        "rmse": 6.862,
+        "mape": "1.74%",
+        "directional_accuracy": "26.5%",
+        "confidence_score": "98.3%",
+        "training_loss": 0.000996,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "AKPL_xgboost": {
+      "path": "ml_service\\models\\xgboost\\AKPL_20260607_074505.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\AKPL_latest.pkl",
+      "fingerprint": "9b1fed72c55cdabd",
+      "training_date": "2026-06-07T07:45:05.604730",
+      "metrics": {
+        "mse": 37.6023,
+        "mae": 3.949,
+        "rmse": 6.1321,
+        "mape": "1.43%",
+        "directional_accuracy": "40.9%",
+        "confidence_score": "98.6%",
+        "training_loss": 25.968378,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "ADBL_lstm": {
+      "path": "ml_service\\models\\lstm\\ADBL_20260607_080554.pkl",
+      "latest_path": "ml_service\\models\\lstm\\ADBL_latest.pkl",
+      "fingerprint": "90c4c6b0558bd1c7",
+      "training_date": "2026-06-07T08:05:55.313935",
+      "metrics": {
+        "mse": 26.3259,
+        "mae": 3.4455,
+        "rmse": 5.1309,
+        "mape": "1.12%",
+        "directional_accuracy": "31.3%",
+        "confidence_score": "98.9%",
+        "training_loss": 0.000588,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "ADBL_xgboost": {
+      "path": "ml_service\\models\\xgboost\\ADBL_20260607_080611.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\ADBL_latest.pkl",
+      "fingerprint": "389ae41e4c7a02d6",
+      "training_date": "2026-06-07T08:06:11.827795",
+      "metrics": {
+        "mse": 14.9334,
+        "mae": 2.2838,
+        "rmse": 3.8644,
+        "mape": "0.74%",
+        "directional_accuracy": "45.0%",
+        "confidence_score": "99.0%",
+        "training_loss": 29.091856,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "AHL_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\AHL_20260607_121710.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\AHL_latest.pkl",
+      "fingerprint": "b7576bf787ed70ef",
+      "training_date": "2026-06-07T12:17:10.839630",
+      "metrics": {
+        "mse": 7532.4007,
+        "mae": 78.3946,
+        "rmse": 86.7894,
+        "mape": "14.42%",
+        "directional_accuracy": "29.3%",
+        "confidence_score": "85.6%",
+        "training_loss": 0.025673,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "AHL_xgboost": {
+      "path": "ml_service\\models\\xgboost\\AHL_20260607_082216.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\AHL_latest.pkl",
+      "fingerprint": "c7ae0661fddd3bf2",
+      "training_date": "2026-06-07T08:22:16.046460",
+      "metrics": {
+        "mse": 656.6503,
+        "mae": 22.2206,
+        "rmse": 25.6252,
+        "mape": "4.04%",
+        "directional_accuracy": "41.6%",
+        "confidence_score": "96.0%",
+        "training_loss": 221.899146,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "AHPC_lstm": {
+      "path": "ml_service\\models\\lstm\\AHPC_20260607_083108.pkl",
+      "latest_path": "ml_service\\models\\lstm\\AHPC_latest.pkl",
+      "fingerprint": "fc0cd491453d504f",
+      "training_date": "2026-06-07T08:31:08.452155",
+      "metrics": {
+        "mse": 42.7375,
+        "mae": 4.8609,
+        "rmse": 6.5374,
+        "mape": "1.72%",
+        "directional_accuracy": "29.9%",
+        "confidence_score": "98.3%",
+        "training_loss": 0.000769,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "AHPC_xgboost": {
+      "path": "ml_service\\models\\xgboost\\AHPC_20260607_083124.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\AHPC_latest.pkl",
+      "fingerprint": "ea2f9a7f2459c6fc",
+      "training_date": "2026-06-07T08:31:24.169999",
+      "metrics": {
+        "mse": 29.3997,
+        "mae": 3.4946,
+        "rmse": 5.4222,
+        "mape": "1.23%",
+        "directional_accuracy": "34.2%",
+        "confidence_score": "98.8%",
+        "training_loss": 37.018771,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "ACLBSL_lstm": {
+      "path": "ml_service\\models\\lstm\\ACLBSL_20260607_084334.pkl",
+      "latest_path": "ml_service\\models\\lstm\\ACLBSL_latest.pkl",
+      "fingerprint": "1d81d695e9fd9a5c",
+      "training_date": "2026-06-07T08:43:34.740000",
+      "metrics": {
+        "mse": 78768.6164,
+        "mae": 181.7962,
+        "rmse": 280.6575,
+        "mape": "4983.42%",
+        "directional_accuracy": "19.0%",
+        "confidence_score": "1.0%",
+        "training_loss": 0.011784,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 756
+    },
+    "ACLBSL_xgboost": {
+      "path": "ml_service\\models\\xgboost\\ACLBSL_20260607_084339.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\ACLBSL_latest.pkl",
+      "fingerprint": "cc8a48a899a6d776",
+      "training_date": "2026-06-07T08:43:39.191415",
+      "metrics": {
+        "mse": 115372.0107,
+        "mae": 238.2401,
+        "rmse": 339.6646,
+        "mape": "2757.52%",
+        "directional_accuracy": "34.2%",
+        "confidence_score": "1.0%",
+        "training_loss": 12557.406595,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 756
+    },
+    "ANLB_lstm": {
+      "path": "ml_service\\models\\lstm\\ANLB_20260607_084649.pkl",
+      "latest_path": "ml_service\\models\\lstm\\ANLB_latest.pkl",
+      "fingerprint": "2db4b3a9abdd82f0",
+      "training_date": "2026-06-07T08:46:49.060296",
+      "metrics": {
+        "mse": 962853.4736,
+        "mae": 162.7331,
+        "rmse": 981.251,
+        "mape": "17.30%",
+        "directional_accuracy": "97.9%",
+        "confidence_score": "82.7%",
+        "training_loss": 0.0,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 755
+    },
+    "ANLB_xgboost": {
+      "path": "ml_service\\models\\xgboost\\ANLB_20260607_084649.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\ANLB_latest.pkl",
+      "fingerprint": "f1dace1531255688",
+      "training_date": "2026-06-07T08:46:49.947005",
+      "metrics": {
+        "mse": 939235.8166,
+        "mae": 158.9488,
+        "rmse": 969.1418,
+        "mape": "5.34%",
+        "directional_accuracy": "98.0%",
+        "confidence_score": "94.7%",
+        "training_loss": 0.069827,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 755
+    },
+    "BFC_lstm": {
+      "path": "ml_service\\models\\lstm\\BFC_20260607_093425.pkl",
+      "latest_path": "ml_service\\models\\lstm\\BFC_latest.pkl",
+      "fingerprint": "b79d76bcb193b9f3",
+      "training_date": "2026-06-07T09:34:25.134830",
+      "metrics": {
+        "mse": 112.7587,
+        "mae": 7.2948,
+        "rmse": 10.6188,
+        "mape": "1.51%",
+        "directional_accuracy": "27.9%",
+        "confidence_score": "98.5%",
+        "training_loss": 0.000641,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "BFC_xgboost": {
+      "path": "ml_service\\models\\xgboost\\BFC_20260607_093440.pkl",
+      "latest_path": "ml_service\\models\\xgboost\\BFC_latest.pkl",
+      "fingerprint": "b5b38cac8461c10e",
+      "training_date": "2026-06-07T09:34:40.657162",
+      "metrics": {
+        "mse": 112.5234,
+        "mae": 8.0998,
+        "rmse": 10.6077,
+        "mape": "1.70%",
+        "directional_accuracy": "32.9%",
+        "confidence_score": "98.3%",
+        "training_loss": 244.960555,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "BANDIPUR_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BANDIPUR_20260607_093933.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BANDIPUR_latest.pkl",
+      "fingerprint": "9b1e3753a6347029",
+      "training_date": "2026-06-07T09:39:33.637846",
+      "metrics": {
+        "mse": 70575.1782,
+        "mae": 161.1967,
+        "rmse": 265.6599,
+        "mape": "6203.12%",
+        "directional_accuracy": "25.0%",
+        "confidence_score": "1.0%",
+        "training_loss": 0.018332,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 141
+    },
+    "BANDIPUR_xgboost": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\BANDIPUR_20260607_093935.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\BANDIPUR_latest.pkl",
+      "fingerprint": "99a4cc709a9f9556",
+      "training_date": "2026-06-07T09:39:35.696392",
+      "metrics": {
+        "mse": 156488.5438,
+        "mae": 229.3418,
+        "rmse": 395.5863,
+        "mape": "3686.85%",
+        "directional_accuracy": "26.9%",
+        "confidence_score": "1.0%",
+        "training_loss": 9509.387845,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 141
+    },
+    "BFCPO_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BFCPO_20260607_094543.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BFCPO_latest.pkl",
+      "fingerprint": "a937fbcfc7ea3439",
+      "training_date": "2026-06-07T09:45:43.226252",
+      "metrics": {
+        "mse": 391.6272,
+        "mae": 16.2287,
+        "rmse": 19.7896,
+        "mape": "5.31%",
+        "directional_accuracy": "33.3%",
+        "confidence_score": "94.7%",
+        "training_loss": 0.03397,
+        "eval_set": "training_only",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 5,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 18
+    },
+    "CBBL_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\CBBL_20260607_094712.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\CBBL_latest.pkl",
+      "fingerprint": "c2a8e300e7ec02e4",
+      "training_date": "2026-06-07T09:47:12.411695",
+      "metrics": {
+        "mse": 37951.6429,
+        "mae": 98.0821,
+        "rmse": 194.8118,
+        "mape": "3769.66%",
+        "directional_accuracy": "30.6%",
+        "confidence_score": "1.0%",
+        "training_loss": 0.012309,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "CBBL_xgboost": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\CBBL_20260607_094724.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\CBBL_latest.pkl",
+      "fingerprint": "438f42ab7628d5e2",
+      "training_date": "2026-06-07T09:47:24.275998",
+      "metrics": {
+        "mse": 39716.7776,
+        "mae": 109.1881,
+        "rmse": 199.2907,
+        "mape": "4557.27%",
+        "directional_accuracy": "53.7%",
+        "confidence_score": "1.0%",
+        "training_loss": 15017.482369,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "CGH_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\CGH_20260607_105315.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\CGH_latest.pkl",
+      "fingerprint": "ccf8d0c99fbfb801",
+      "training_date": "2026-06-07T10:53:16.023208",
+      "metrics": {
+        "mse": 297.2919,
+        "mae": 12.9998,
+        "rmse": 17.2422,
+        "mape": "1.49%",
+        "directional_accuracy": "29.3%",
+        "confidence_score": "98.5%",
+        "training_loss": 0.013068,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "CGH_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\CGH_20260607_105412.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\CGH_latest.pkl",
+      "fingerprint": "63a595534bfc622e",
+      "training_date": "2026-06-07T10:54:13.073796",
+      "metrics": {
+        "mse": 207.8796,
+        "mae": 9.8383,
+        "rmse": 14.418,
+        "mape": "1.14%",
+        "directional_accuracy": "35.1%",
+        "confidence_score": "98.9%",
+        "training_loss": 12050.125175,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "CGH_xgboost": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\CGH_20260607_105424.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\CGH_latest.pkl",
+      "fingerprint": "41c0cae5d14e58bc",
+      "training_date": "2026-06-07T10:54:24.956454",
+      "metrics": {
+        "mse": 281.265,
+        "mae": 11.5358,
+        "rmse": 16.771,
+        "mape": "1.33%",
+        "directional_accuracy": "36.2%",
+        "confidence_score": "98.7%",
+        "training_loss": 14947.349556,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "CBBL_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\CBBL_20260607_110205.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\CBBL_latest.pkl",
+      "fingerprint": "dd62dd8acc43e89c",
+      "training_date": "2026-06-07T11:02:06.501463",
+      "metrics": {
+        "mse": 47491.6008,
+        "mae": 114.4936,
+        "rmse": 217.9257,
+        "mape": "5118.34%",
+        "directional_accuracy": "37.2%",
+        "confidence_score": "1.0%",
+        "training_loss": 10700.701901,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "GLH_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\GLH_20260607_110344.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\GLH_latest.pkl",
+      "fingerprint": "c22f7658e2053cfa",
+      "training_date": "2026-06-07T11:03:45.224675",
+      "metrics": {
+        "mse": 48.0386,
+        "mae": 4.7013,
+        "rmse": 6.931,
+        "mape": "1.71%",
+        "directional_accuracy": "30.6%",
+        "confidence_score": "98.3%",
+        "training_loss": 0.001709,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "GLH_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\GLH_20260607_110445.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\GLH_latest.pkl",
+      "fingerprint": "acdd00a9b61f7387",
+      "training_date": "2026-06-07T11:04:46.158685",
+      "metrics": {
+        "mse": 29.4106,
+        "mae": 3.7414,
+        "rmse": 5.4232,
+        "mape": "1.38%",
+        "directional_accuracy": "36.5%",
+        "confidence_score": "98.6%",
+        "training_loss": 8.568454,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "GLH_xgboost": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\GLH_20260607_110500.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\GLH_latest.pkl",
+      "fingerprint": "90881a3642329253",
+      "training_date": "2026-06-07T11:05:01.002362",
+      "metrics": {
+        "mse": 35.4898,
+        "mae": 3.725,
+        "rmse": 5.9573,
+        "mape": "1.34%",
+        "directional_accuracy": "39.6%",
+        "confidence_score": "98.7%",
+        "training_loss": 25.825001,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 3,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    },
+    "ADBL_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\ADBL_20260607_111814.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\ADBL_latest.pkl",
+      "fingerprint": "1499831f1121422b",
+      "training_date": "2026-06-07T11:18:14.963344",
+      "metrics": {
+        "mse": 22.9322,
+        "mae": 3.0678,
+        "rmse": 4.7888,
+        "mape": "1.00%",
+        "directional_accuracy": "36.5%",
+        "confidence_score": "99.0%",
+        "training_loss": 5.344557,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "AKPL_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\AKPL_20260607_111930.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\AKPL_latest.pkl",
+      "fingerprint": "5db8b2a78b428e5f",
+      "training_date": "2026-06-07T11:19:31.505250",
+      "metrics": {
+        "mse": 50.1867,
+        "mae": 4.4029,
+        "rmse": 7.0843,
+        "mape": "1.58%",
+        "directional_accuracy": "31.1%",
+        "confidence_score": "98.4%",
+        "training_loss": 6.661594,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "AHL_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\AHL_20260607_113520.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\AHL_latest.pkl",
+      "fingerprint": "3d5a35dcabb5b375",
+      "training_date": "2026-06-07T11:35:21.057209",
+      "metrics": {
+        "mse": 569.8293,
+        "mae": 18.8903,
+        "rmse": 23.8711,
+        "mape": "3.49%",
+        "directional_accuracy": "49.7%",
+        "confidence_score": "96.5%",
+        "r2_score": 0.5522,
+        "training_loss": 7.137386,
+        "oob_score": 0.9973,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "BARUN_lstm": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BARUN_20260607_122421.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\lstm\\BARUN_latest.pkl",
+      "fingerprint": "a3f64cef6a5fc704",
+      "training_date": "2026-06-07T12:24:22.156298",
+      "metrics": {
+        "mse": 1819.9678,
+        "mae": 37.0856,
+        "rmse": 42.6611,
+        "mape": "11.06%",
+        "directional_accuracy": "38.1%",
+        "confidence_score": "88.9%",
+        "training_loss": 0.0308,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "sequence_length": 20,
+        "hidden_size": 16,
+        "epochs": 50,
+        "learning_rate": 0.005
+      },
+      "data_length": 758
+    },
+    "BARUN_random_forest": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\BARUN_20260607_122628.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\random_forest\\BARUN_latest.pkl",
+      "fingerprint": "5b645fd97a345dc3",
+      "training_date": "2026-06-07T12:26:29.664758",
+      "metrics": {
+        "mse": 5.2223,
+        "mae": 1.6129,
+        "rmse": 2.2852,
+        "mape": "0.46%",
+        "directional_accuracy": "57.8%",
+        "confidence_score": "99.0%",
+        "r2_score": 0.9899,
+        "training_loss": 4.427514,
+        "oob_score": 0.9973,
+        "trees": 100,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "bootstrap": true
+      },
+      "data_length": 758
+    },
+    "BARUN_xgboost": {
+      "path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\BARUN_20260607_122701.pkl",
+      "latest_path": "G:\\BCA\\BCA - Eight Semester\\Project III\\ArthaPredict\\ml_service\\models\\xgboost\\BARUN_latest.pkl",
+      "fingerprint": "ba2ef7a2619b64cd",
+      "training_date": "2026-06-07T12:27:01.544577",
+      "metrics": {
+        "mse": 283673.455,
+        "mae": 457.4629,
+        "rmse": 532.61,
+        "mape": "138.08%",
+        "directional_accuracy": "40.7%",
+        "confidence_score": "1.0%",
+        "r2_score": -541.3692,
+        "training_loss": 989184.897288,
+        "trees": 50,
+        "eval_set": "validation",
+        "cached": false
+      },
+      "config": {
+        "n_estimators": 50,
+        "max_depth": 5,
+        "learning_rate": 0.05
+      },
+      "data_length": 758
+    }
+  },
+  "last_updated": "2026-06-07T12:27:01.544611"
+}

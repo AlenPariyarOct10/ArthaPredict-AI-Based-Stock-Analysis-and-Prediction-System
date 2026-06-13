@@ -1,3 +1,137 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    /* Blue Theme Colors - Replace blue/teal with blue */
+    .gradient-accent,
+    .bg-gradient-to-r.from-blue-500,
+    .bg-gradient-to-r.from-blue-600 {
+        background: #0078d7 !important;
+        background-image: none !important;
+    }
+
+    /* Fix for gradient text - make it solid blue text instead of transparent */
+    .bg-gradient-to-r.from-blue-600.to-teal-600.bg-clip-text.text-transparent,
+    .dark .bg-gradient-to-r.from-blue-400.to-teal-400.bg-clip-text.text-transparent {
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        -webkit-text-fill-color: unset !important;
+        color: #0078d7 !important;
+    }
+
+    .dark .bg-gradient-to-r.from-blue-400.to-teal-400.bg-clip-text.text-transparent {
+        color: #75b6e9 !important;
+    }
+
+    /* Focus ring colors - Replace blue with blue */
+    .focus\:ring-blue-500:focus,
+    .focus\:ring-blue-600:focus {
+        --tw-ring-color: #0078d7 !important;
+    }
+
+    .dark .focus\:ring-blue-400:focus,
+    .dark .dark\:focus\:ring-blue-400:focus,
+    .dark .focus\:ring-blue-500:focus {
+        --tw-ring-color: #75b6e9 !important;
+    }
+
+    /* Border focus colors */
+    .focus\:border-blue-500:focus,
+    .focus\:border-blue-600:focus {
+        border-color: #0078d7 !important;
+    }
+
+    .dark .focus\:border-blue-400:focus,
+    .dark .dark\:focus\:border-blue-400:focus {
+        border-color: #75b6e9 !important;
+    }
+
+    /* Primary buttons and accents */
+    .text-blue-600,
+    .text-blue-500,
+    .text-blue-700 {
+        color: #0078d7 !important;
+    }
+
+    .bg-blue-600,
+    .bg-blue-500,
+    .bg-blue-700 {
+        background-color: #0078d7 !important;
+    }
+
+    .border-blue-600,
+    .border-blue-500 {
+        border-color: #0078d7 !important;
+    }
+
+    .hover\:bg-blue-700:hover,
+    .hover\:bg-blue-600:hover {
+        background-color: #005a9e !important;
+    }
+
+    /* Light blue for secondary elements */
+    .bg-blue-50 {
+        background-color: #e3f2fd !important;
+    }
+
+    .text-blue-400 {
+        color: #75b6e9 !important;
+    }
+
+    .border-blue-200,
+    .border-blue-400 {
+        border-color: #75b6e9 !important;
+    }
+
+    /* Dark mode variants */
+    .dark .bg-blue-900\/30,
+    .dark .bg-blue-900\/20,
+    .dark .dark\:bg-blue-900\/30,
+    .dark .dark\:bg-blue-900\/20 {
+        background-color: rgba(0, 120, 215, 0.2) !important;
+    }
+
+    .dark .text-blue-400,
+    .dark .dark\:text-blue-400,
+    .dark .text-blue-300,
+    .dark .dark\:text-blue-300 {
+        color: #75b6e9 !important;
+    }
+
+    .dark .border-blue-800,
+    .dark .dark\:border-blue-800,
+    .dark .border-blue-900,
+    .dark .dark\:border-blue-900 {
+        border-color: #0078d7 !important;
+    }
+
+    /* Loading and progress indicators */
+    .loading-spinner,
+    .loading-bar,
+    .loading-progress,
+    .text-blue-600.animate-spin,
+    .text-blue-500.animate-spin {
+        background-color: #75b6e9 !important;
+        color: #75b6e9 !important;
+    }
+
+    .bg-blue-600,
+    .bg-blue-500 {
+        background-color: #75b6e9 !important;
+    }
+
+    /* Remove any remaining gradients */
+    [class*="gradient-"]:not(.bg-clip-text),
+    [class*="bg-gradient-"]:not(.bg-clip-text) {
+        background-image: none !important;
+    }
+
+    /* Specific gradient overrides */
+    .bg-gradient-to-r.from-blue-600.to-teal-600:not(.bg-clip-text),
+    .bg-gradient-to-r.from-blue-500.to-teal-500:not(.bg-clip-text) {
+        background: #0078d7 !important;
+        background-image: none !important;
+    }
+}
