@@ -14,7 +14,7 @@
             <select name="eligibility" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2">
                 <option value="all" @selected($eligibility === 'all')>All stocks</option>
                 <option value="eligible" @selected($eligibility === 'eligible')>Eligible ({{ $minimumDatapoints }}+ usable datapoints)</option>
-                <option value="ineligible" @selected($eligibility === 'ineligible')>Not eligible (&lt;{{ $minimumDatapoints }} usable datapoints)</option>
+                <option value="ineligible" @selected($eligibility === 'ineligible')>Not eligible (<{{ $minimumDatapoints }} usable datapoints)</option>
             </select>
         </div>
         <div class="flex-1">
@@ -30,47 +30,46 @@
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                         </path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Predictions</p>
-                    <h4 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $totalPredictions }}</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Predictions</p>
+                    <h4 class="text-xl font-bold text-gray-800 dark:text-white">{{ $totalPredictions }}</h4>
                 </div>
             </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div
-                    class="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Active Models</p>
-                    <h4 class="text-2xl font-bold text-gray-800 dark:text-white">4 (LSTM, XGB, RF, MA)</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Active Models</p>
+                    <h4 class="text-xl font-bold text-gray-800 dark:text-white">4 (LSTM, XGB, RF, MA)</h4>
                 </div>
             </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 mr-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 mr-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Forecast Horizon</p>
-                    <h4 class="text-2xl font-bold text-gray-800 dark:text-white">Up to 30 Days</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Forecast Horizon</p>
+                    <h4 class="text-xl font-bold text-gray-800 dark:text-white">Up to 30 Days</h4>
                 </div>
             </div>
         </div>
@@ -78,7 +77,7 @@
 
     <!-- Analysis Table -->
     <div
-        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div class="p-6 border-b border-gray-100 dark:border-gray-700">
             <h4 class="text-xl font-semibold text-gray-800 dark:text-white">Stock Forecast Comparison</h4>
         </div>
@@ -191,7 +190,7 @@
     </div>
 
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
             <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Model Methodology</h4>
             <div class="space-y-4">
                 <div class="flex items-start">
@@ -232,7 +231,7 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
             <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Recent Training Activity</h4>
             <div class="space-y-4">
                 @forelse($latestPredictions as $lp)
