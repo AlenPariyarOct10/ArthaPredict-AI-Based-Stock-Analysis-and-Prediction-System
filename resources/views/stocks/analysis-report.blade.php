@@ -21,7 +21,7 @@
         .small { font-size: 8px; }
         .header {
             padding: 18px 22px;
-            background: linear-gradient(135deg, #1e40af 0%, #0f3b77 100%);
+            background: #1e40af;
             color: #fff;
             border-radius: 8px;
             margin-bottom: 16px;
