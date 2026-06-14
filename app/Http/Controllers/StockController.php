@@ -426,6 +426,7 @@ class StockController extends Controller
         $options->set('defaultFont', 'DejaVu Sans');
         $options->set('isRemoteEnabled', false);
         $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', false);
 
         $pdf = new Dompdf($options);
         $pdf->loadHtml(view('stocks.analysis-report', $reportData)->render());
