@@ -13,7 +13,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArthaNoteController;
 use App\Http\Controllers\DatasetImportController;
 use App\Http\Controllers\AnalysisController;
-use App\Http\Controllers\MLHealthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,8 +142,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/export/csv', [ArthaNoteController::class, 'exportCsv'])->name('export.csv');
     });
 
-    // ML Health Check
-    Route::get('/ml/health', [MLHealthController::class, 'check'])->name('ml.health');
 });
 
 // Admin Authentication Routes
@@ -166,8 +163,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Admin Protected Routes
 Route::middleware(['auth', 'admin', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
-
     // Feedback Management
     Route::prefix('feedbacks')->name('feedbacks.')->group(function () {
         Route::get('/', [FeedbackController::class, 'adminIndex'])->name('index');
@@ -196,9 +191,6 @@ Route::middleware(['auth', 'admin', 'verified'])->prefix('admin')->name('admin.'
         Route::get('/', [DatasetImportController::class, 'index'])->name('index');
         Route::post('/import', [DatasetImportController::class, 'import'])->name('import');
         Route::get('/sample', [DatasetImportController::class, 'downloadSample'])->name('sample');
-        Route::get('/export', [DatasetImportController::class, 'export'])->name('export');
-        Route::delete('/clear', [DatasetImportController::class, 'clearData'])->name('clear');
-        Route::get('/validation', [DatasetImportController::class, 'validateData'])->name('validate');
     });
 
     // Stock Management (Admin)
@@ -226,23 +218,10 @@ Route::middleware(['auth', 'admin', 'verified'])->prefix('admin')->name('admin.'
     });
 });
 
-// Webhook Routes
-Route::prefix('webhook')->name('webhook.')->group(function () {
-    Route::post('/training/callback', [App\Http\Controllers\WebhookController::class, 'trainingCallback'])
-        ->name('training.callback')
-        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
-        ->middleware('throttle:20,1');
-
-    Route::post('/dataset/update', [App\Http\Controllers\WebhookController::class, 'datasetUpdate'])
-        ->name('dataset.update')
-        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
-});
-
 // API Routes for AJAX calls (Rate limited)
 Route::prefix('api')->name('api.')->middleware(['auth', 'throttle:60,1'])->group(function () {
     Route::get('/stocks/search', [StockController::class, 'search'])->name('stocks.search');
     Route::get('/stocks/popular', [StockController::class, 'popular'])->name('stocks.popular');
-    Route::get('/market/summary', [DashboardController::class, 'marketSummary'])->name('market.summary');
     Route::get('/predictions/latest', [StockController::class, 'latestPredictions'])->name('predictions.latest');
 });
 

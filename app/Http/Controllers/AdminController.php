@@ -8,7 +8,6 @@ use App\Models\Feedback;
 use App\Models\StockPrediction;
 use App\Models\ModelTrainingJob;
 use App\Models\AppSetting;
-use App\Jobs\TrainModelJob;
 use App\Jobs\TrainUniversalModelJob;
 use App\Jobs\TrainIndividualModelJob;
 use App\Jobs\GenerateUniversalPredictionsJob;

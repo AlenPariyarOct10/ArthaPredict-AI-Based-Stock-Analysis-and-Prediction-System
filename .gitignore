@@ -25,3 +25,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /ml_service/models/
+*.pkl
+/ml_service/.vscode/
+**/__pycache__/
+*.py[cod]
+/reports/documentation_work/
