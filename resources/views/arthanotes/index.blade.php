@@ -196,7 +196,7 @@
         </div>
 
         <!-- Feed -->
-        <div class="space-y-6 pb-12">
+        <div id="arthaNotesFeed" class="space-y-6 pb-12">
             @forelse($notes as $note)
                 <article class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition-shadow overflow-hidden group">
                     <!-- Post Header -->
@@ -378,10 +378,17 @@
                 </div>
             @endforelse
 
-            <!-- Pagination -->
             @if($notes->hasPages())
-                <div class="mt-8">
-                    {{ $notes->links() }}
+                <div
+                    id="arthaNotesLoader"
+                    class="flex items-center justify-center py-6 text-sm text-gray-500 dark:text-gray-400"
+                    data-next-url="{{ $notes->nextPageUrl() }}"
+                    aria-live="polite"
+                >
+                    <span class="inline-flex items-center gap-2">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                        Loading more ArthaNotes...
+                    </span>
                 </div>
             @endif
         </div>
@@ -399,6 +406,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const feed = document.getElementById('arthaNotesFeed');
 
             // Toggle comments section
             window.toggleComments = function(noteId) {
@@ -409,158 +417,164 @@
                 }
             };
 
-            // Like toggle
-            document.querySelectorAll('.arthanote-like-form').forEach((form) => {
-                form.addEventListener('submit', async function (event) {
+            feed?.addEventListener('submit', async function (event) {
+                const form = event.target;
+
+                if (form.matches('.arthanote-like-form')) {
                     event.preventDefault();
+                    await toggleLike(form, csrfToken);
+                    return;
+                }
 
-                    const button = form.querySelector('.arthanote-like-btn');
-                    const countEl = form.querySelector('.arthanote-like-count');
-                    const iconEl = button.querySelector('i.fa-heart');
-                    if (!button || !countEl || !iconEl) return;
-
-                    const isLiked = form.dataset.liked === '1';
-
-                    // Optimistic UI Update
-                    form.dataset.liked = isLiked ? '0' : '1';
-                    const currentCount = parseInt(countEl.textContent);
-                    countEl.textContent = isLiked ? (currentCount - 1) : (currentCount + 1);
-
-                    if (isLiked) {
-                        // Unlike visual
-                        button.classList.remove('text-red-500', 'dark:text-red-400');
-                        button.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:text-red-500', 'dark:hover:text-red-400');
-                        iconEl.classList.remove('fas');
-                        iconEl.classList.add('far');
-                    } else {
-                        // Like visual
-                        button.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:text-red-500', 'dark:hover:text-red-400');
-                        button.classList.add('text-red-500', 'dark:text-red-400');
-                        iconEl.classList.remove('far');
-                        iconEl.classList.add('fas');
-                    }
-
-                    button.disabled = true;
-
-                    try {
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken || '',
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json',
-                            },
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Like request failed');
-                        }
-
-                        const data = await response.json();
-                        // Sync with server response
-                        countEl.textContent = data.likes_count;
-                        form.dataset.liked = data.liked ? '1' : '0';
-
-                    } catch (error) {
-                        console.error('Error toggling like:', error);
-                        // Revert optimistic update
-                        form.dataset.liked = isLiked ? '1' : '0';
-                        countEl.textContent = currentCount;
-                        if (isLiked) {
-                            button.classList.add('text-red-500', 'dark:text-red-400');
-                            button.classList.remove('text-gray-600', 'dark:text-gray-400');
-                            iconEl.classList.add('fas');
-                            iconEl.classList.remove('far');
-                        } else {
-                            button.classList.remove('text-red-500', 'dark:text-red-400');
-                            button.classList.add('text-gray-600', 'dark:text-gray-400');
-                            iconEl.classList.remove('fas');
-                            iconEl.classList.add('far');
-                        }
-                    } finally {
-                        button.disabled = false;
-                    }
-                });
+                if (form.matches('.comment-form-ajax, .reply-form')) {
+                    event.preventDefault();
+                    await submitComment(form, csrfToken);
+                }
             });
 
-            // Comment form submission (AJAX)
-            document.querySelectorAll('.comment-form-ajax').forEach((form) => {
-                form.addEventListener('submit', async function (e) {
-                    e.preventDefault();
-
-                    const button = form.querySelector('button[type="submit"]');
-                    const textarea = form.querySelector('textarea[name="body"]');
-                    const noteId = form.dataset.noteId;
-                    const commentList = document.getElementById('commentList-' + noteId);
-
-                    if (!textarea.value.trim()) return;
-
-                    button.disabled = true;
-                    button.innerHTML = '<span>Posting...</span>';
-
-                    try {
-                        const formData = new FormData(form);
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken || '',
-                                'X-Requested-With': 'XMLHttpRequest',
-                            },
-                        });
-
-                        if (response.ok) {
-                            textarea.value = '';
-                            // Reload comments or add the new comment to the list
-                            loadComments(noteId);
-                        }
-                    } catch (error) {
-                        console.error('Error posting comment:', error);
-                    } finally {
-                        button.disabled = false;
-                        button.innerHTML = '<span>Post</span>';
-                    }
-                });
-            });
-
-            // Reply form submission (AJAX)
-            document.querySelectorAll('.reply-form').forEach((form) => {
-                form.addEventListener('submit', async function (e) {
-                    e.preventDefault();
-
-                    const button = form.querySelector('button[type="submit"]');
-                    const textarea = form.querySelector('textarea[name="body"]');
-                    const parentId = form.dataset.parentId;
-
-                    if (!textarea.value.trim()) return;
-
-                    button.disabled = true;
-
-                    try {
-                        const formData = new FormData(form);
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken || '',
-                                'X-Requested-With': 'XMLHttpRequest',
-                            },
-                        });
-
-                        if (response.ok) {
-                            textarea.value = '';
-                            // Close reply box and refresh comments
-                            const noteId = form.closest('.comment-section').id.split('commentSection-')[1];
-                            loadComments(noteId);
-                        }
-                    } catch (error) {
-                        console.error('Error posting reply:', error);
-                    } finally {
-                        button.disabled = false;
-                    }
-                });
-            });
+            initializeLazyLoading();
         });
+
+        async function toggleLike(form, csrfToken) {
+            const button = form.querySelector('.arthanote-like-btn');
+            const countEl = form.querySelector('.arthanote-like-count');
+            const iconEl = button?.querySelector('i.fa-heart');
+            if (!button || !countEl || !iconEl) return;
+
+            const isLiked = form.dataset.liked === '1';
+            const currentCount = parseInt(countEl.textContent, 10);
+
+            form.dataset.liked = isLiked ? '0' : '1';
+            countEl.textContent = isLiked ? Math.max(0, currentCount - 1) : currentCount + 1;
+            setLikeAppearance(button, iconEl, !isLiked);
+            button.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) throw new Error('Like request failed');
+
+                const data = await response.json();
+                countEl.textContent = data.likes_count;
+                form.dataset.liked = data.liked ? '1' : '0';
+                setLikeAppearance(button, iconEl, data.liked);
+            } catch (error) {
+                console.error('Error toggling like:', error);
+                form.dataset.liked = isLiked ? '1' : '0';
+                countEl.textContent = currentCount;
+                setLikeAppearance(button, iconEl, isLiked);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function setLikeAppearance(button, icon, liked) {
+            button.classList.toggle('text-red-500', liked);
+            button.classList.toggle('dark:text-red-400', liked);
+            button.classList.toggle('text-gray-600', !liked);
+            button.classList.toggle('dark:text-gray-400', !liked);
+            button.classList.toggle('hover:text-red-500', !liked);
+            button.classList.toggle('dark:hover:text-red-400', !liked);
+            icon.classList.toggle('fas', liked);
+            icon.classList.toggle('far', !liked);
+        }
+
+        async function submitComment(form, csrfToken) {
+            const button = form.querySelector('button[type="submit"]');
+            const textarea = form.querySelector('textarea[name="body"]');
+            if (!button || !textarea?.value.trim()) return;
+
+            const noteId = form.matches('.comment-form-ajax')
+                ? form.dataset.noteId
+                : form.closest('.comment-section')?.id.split('commentSection-')[1];
+            const originalContent = button.innerHTML;
+            button.disabled = true;
+
+            if (form.matches('.comment-form-ajax')) {
+                button.innerHTML = '<span>Posting...</span>';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                if (!response.ok) throw new Error('Comment request failed');
+
+                textarea.value = '';
+                await loadComments(noteId);
+            } catch (error) {
+                console.error('Error posting comment:', error);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            }
+        }
+
+        function initializeLazyLoading() {
+            const feed = document.getElementById('arthaNotesFeed');
+            const loader = document.getElementById('arthaNotesLoader');
+            if (!feed || !loader || !loader.dataset.nextUrl) return;
+
+            let loading = false;
+            const loadNextPage = async () => {
+                if (loading || !loader.dataset.nextUrl) return;
+                loading = true;
+                loader.innerHTML = '<span class="inline-flex items-center gap-2"><i class="fas fa-circle-notch fa-spin"></i> Loading more ArthaNotes...</span>';
+
+                try {
+                    const response = await fetch(loader.dataset.nextUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html',
+                        },
+                    });
+
+                    if (!response.ok) throw new Error('Unable to load more ArthaNotes');
+
+                    const documentFragment = new DOMParser().parseFromString(await response.text(), 'text/html');
+                    const nextFeed = documentFragment.getElementById('arthaNotesFeed');
+                    const nextLoader = documentFragment.getElementById('arthaNotesLoader');
+
+                    nextFeed?.querySelectorAll(':scope > article').forEach((article) => {
+                        feed.insertBefore(article, loader);
+                        window.Alpine?.initTree(article);
+                    });
+
+                    loader.dataset.nextUrl = nextLoader?.dataset.nextUrl || '';
+
+                    if (!loader.dataset.nextUrl) {
+                        observer.disconnect();
+                        loader.remove();
+                    }
+                } catch (error) {
+                    console.error('Error loading ArthaNotes:', error);
+                    loader.innerHTML = '<button type="button" class="text-primary font-semibold">Retry loading posts</button>';
+                } finally {
+                    loading = false;
+                }
+            };
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) loadNextPage();
+            }, {
+                rootMargin: '400px 0px',
+            });
+
+            loader.addEventListener('click', loadNextPage);
+            observer.observe(loader);
+        }
 
         // Load comments for a note
         async function loadComments(noteId) {
