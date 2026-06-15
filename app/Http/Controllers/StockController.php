@@ -5,18 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Stock;
 use App\Models\StockPrediction;
 use App\Models\StockPrice;
+use App\Services\StockAnalysisReportService;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
+    private const MIN_ELIGIBLE_DATAPOINTS = 30;
+
     public function index(Request $request)
     {
         $search = $request->get('search');
-        // Only include stocks that have at least one trained model
-        $query = Stock::where('is_active', true)->whereHas('trainedModels', function($q) {
-            $q->where('is_active', true);
-        });
+        $eligibility = in_array(
+            $request->get('eligibility'),
+            ['eligible', 'ineligible'],
+            true
+        ) ? $request->get('eligibility') : 'all';
+        $sort = in_array(
+            $request->get('sort'),
+            ['datapoints_desc', 'datapoints_asc', 'symbol_asc'],
+            true
+        ) ? $request->get('sort') : 'symbol_asc';
+
+        $query = Stock::where('is_active', true)
+            ->withUsableDatapointCount()
+            ->with('latestPrice');
+        $hasUniversalModels = \App\Models\TrainedModel::whereNull('stock_id')
+            ->where('is_active', true)
+            ->exists();
+        if (!$hasUniversalModels) {
+            $query->whereHas('trainedModels', function ($modelQuery) {
+                $modelQuery->where('is_active', true);
+            });
+        }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -25,8 +48,36 @@ class StockController extends Controller
             });
         }
 
+        if ($eligibility === 'eligible') {
+            $query->whereRaw(
+                'stocks.usable_datapoints_count >= ?',
+                [self::MIN_ELIGIBLE_DATAPOINTS]
+            );
+        } elseif ($eligibility === 'ineligible') {
+            $query->whereRaw(
+                'stocks.usable_datapoints_count < ?',
+                [self::MIN_ELIGIBLE_DATAPOINTS]
+            );
+        }
+
+        match ($sort) {
+            'datapoints_desc' => $query->orderByDesc('datapoints_count')->orderBy('symbol'),
+            'datapoints_asc' => $query->orderBy('datapoints_count')->orderBy('symbol'),
+            default => $query->orderBy('symbol'),
+        };
+
         $stocks = $query->paginate(15)->withQueryString();
-        return view('stocks.index', compact('stocks', 'search'));
+        $minimumDatapoints = self::MIN_ELIGIBLE_DATAPOINTS;
+        return view(
+            'stocks.index',
+            compact(
+                'stocks',
+                'search',
+                'eligibility',
+                'sort',
+                'minimumDatapoints'
+            )
+        );
     }
 
     public function show($symbol)
@@ -46,9 +97,56 @@ class StockController extends Controller
             $predictions = $stock->predictions()
                 ->where('target_date', '>', $latestDate)
                 ->orderBy('target_date', 'asc')
+                ->orderBy('model_scope')
                 ->orderBy('model_type')
                 ->get();
         }
+
+        $modelComparisons = $predictions
+            ->groupBy('model_scope')
+            ->map(function ($scopePredictions) {
+                return $scopePredictions
+                    ->groupBy('model_type')
+                    ->map(function ($modelPredictions, $modelType) {
+                        $metrics = $modelPredictions->first()->additional_metrics ?? [];
+                        $mape = (float) ($metrics['mape'] ?? 0);
+
+                        return [
+                            'model_type' => $modelType,
+                            'benchmark' => (bool) ($metrics['benchmark'] ?? false),
+                            'rmse' => (float) ($metrics['rmse'] ?? 0),
+                            'mae' => (float) ($metrics['mae'] ?? 0),
+                            'mape' => $mape,
+                            'r2' => (float) ($metrics['r2'] ?? 0),
+                            'directional_accuracy' => (float) ($metrics['directional_accuracy'] ?? 0),
+                            'accuracy_proxy' => max(0, min(100, 100 - $mape)),
+                        ];
+                    })
+                    ->values();
+            });
+
+        $recommendedModels = $modelComparisons->map(function ($comparison) {
+            $learned = $comparison->where('benchmark', false)->values();
+            return $learned
+                ->map(function ($model) use ($learned) {
+                    $model['rank_score'] =
+                        $learned->sortBy('rmse')->pluck('model_type')->search($model['model_type']) +
+                        $learned->sortBy('mae')->pluck('model_type')->search($model['model_type']) +
+                        $learned->sortBy('mape')->pluck('model_type')->search($model['model_type']) +
+                        $learned->sortByDesc('r2')->pluck('model_type')->search($model['model_type']) +
+                        $learned->sortByDesc('directional_accuracy')->pluck('model_type')->search($model['model_type']);
+                    return $model;
+                })
+                ->sortBy([
+                    ['rank_score', 'asc'],
+                    ['mape', 'asc'],
+                ])
+                ->first();
+        });
+
+        $bestOverallModels = $modelComparisons->map(
+            fn ($comparison) => $comparison->sortBy('mape')->first()
+        );
 
         $isInWatchlist = auth()->user()
             ->watchlists()
@@ -59,7 +157,16 @@ class StockController extends Controller
             ? asset($stock->symbol . '_trend.png') . '?v=' . filemtime(public_path($stock->symbol . '_trend.png'))
             : null;
 
-        return view('stocks.show', compact('stock', 'historicalData', 'predictions', 'isInWatchlist', 'trendImage'));
+        return view('stocks.show', compact(
+            'stock',
+            'historicalData',
+            'predictions',
+            'modelComparisons',
+            'recommendedModels',
+            'bestOverallModels',
+            'isInWatchlist',
+            'trendImage'
+        ));
     }
 
     public function runPrediction(Request $request, $symbol, \App\Services\PredictionService $predictionService)
@@ -179,17 +286,25 @@ class StockController extends Controller
     {
         $stock = Stock::where('symbol', $symbol)->firstOrFail();
 
-        $activeModels = \App\Models\TrainedModel::where('stock_id', $stock->id)
+        $activeModels = \App\Models\TrainedModel::whereNull('stock_id')
+            ->where('model_scope', 'universal')
             ->where('is_active', true)
             ->get();
+        $activeModels = $activeModels->concat(
+            \App\Models\TrainedModel::where('stock_id', $stock->id)
+                ->where('model_scope', 'individual')
+                ->where('is_active', true)
+                ->get()
+        );
 
         $metrics = [];
         foreach ($activeModels as $model) {
-            $metrics[$model->model_type] = [
+            $metrics[$model->model_scope][$model->model_type] = [
                 'mse' => $model->mse,
                 'mae' => $model->mae,
                 'rmse' => $model->rmse,
                 'mape' => $model->mape,
+                'r2' => $model->r2,
                 'directional_accuracy' => $model->directional_accuracy,
                 'confidence_score' => $model->confidence_score,
                 'training_date' => $model->training_date,
@@ -291,5 +406,40 @@ class StockController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function analysisReport(
+        $symbol,
+        StockAnalysisReportService $reportService
+    ) {
+        $stock = Stock::where('symbol', $symbol)->firstOrFail();
+        $reportData = $reportService->build($stock);
+
+        if ($reportData['history']->isEmpty()) {
+            return back()->with(
+                'error',
+                'No usable historical data is available for this report.'
+            );
+        }
+
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
+
+        $pdf = new Dompdf($options);
+        $pdf->loadHtml(view('stocks.analysis-report', $reportData)->render());
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->render();
+
+        $filename = $stock->symbol
+            . '_analysis_report_'
+            . now()->format('Y-m-d')
+            . '.pdf';
+
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
 }

@@ -8,20 +8,63 @@ use Illuminate\Http\Request;
 
 class AnalysisController extends Controller
 {
-    public function index()
+    private const MIN_ELIGIBLE_DATAPOINTS = 30;
+
+    public function index(Request $request)
     {
-        // Fetch stocks with their latest predictions
+        $eligibility = in_array(
+            $request->get('eligibility'),
+            ['eligible', 'ineligible'],
+            true
+        ) ? $request->get('eligibility') : 'all';
+        $sort = in_array(
+            $request->get('sort'),
+            ['datapoints_desc', 'datapoints_asc', 'symbol_asc'],
+            true
+        ) ? $request->get('sort') : 'symbol_asc';
+
         $stocks = Stock::where('is_active', true)
-            ->whereHas('predictions')
+            ->withUsableDatapointCount()
             ->with(['predictions' => function ($query) {
                 $query->orderBy('target_date', 'asc');
-            }])
-            ->get();
+            }]);
+
+        if ($eligibility === 'eligible') {
+            $stocks->whereRaw(
+                'stocks.usable_datapoints_count >= ?',
+                [self::MIN_ELIGIBLE_DATAPOINTS]
+            );
+        } elseif ($eligibility === 'ineligible') {
+            $stocks->whereRaw(
+                'stocks.usable_datapoints_count < ?',
+                [self::MIN_ELIGIBLE_DATAPOINTS]
+            );
+        }
+
+        match ($sort) {
+            'datapoints_desc' => $stocks->orderByDesc('datapoints_count')->orderBy('symbol'),
+            'datapoints_asc' => $stocks->orderBy('datapoints_count')->orderBy('symbol'),
+            default => $stocks->orderBy('symbol'),
+        };
+
+        $stocks = $stocks->paginate(15)->withQueryString();
 
         // Calculate some global metrics if needed
         $totalPredictions = StockPrediction::count();
-        $latestPredictions = StockPrediction::latest()->take(5)->get();
+        $latestPredictions = StockPrediction::with('stock')
+            ->latest()
+            ->take(5)
+            ->get();
 
-        return view('analysis.index', compact('stocks', 'totalPredictions', 'latestPredictions'));
+        $minimumDatapoints = self::MIN_ELIGIBLE_DATAPOINTS;
+
+        return view('analysis.index', compact(
+            'stocks',
+            'totalPredictions',
+            'latestPredictions',
+            'eligibility',
+            'sort',
+            'minimumDatapoints'
+        ));
     }
 }

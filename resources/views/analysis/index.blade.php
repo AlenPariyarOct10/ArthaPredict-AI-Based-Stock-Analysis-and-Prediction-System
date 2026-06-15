@@ -7,6 +7,27 @@
             performance.</p>
     </div>
 
+    <form method="GET" action="{{ route('analysis.index') }}"
+          class="mb-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-col sm:flex-row gap-3 sm:items-end">
+        <div class="flex-1">
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Eligibility</label>
+            <select name="eligibility" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2">
+                <option value="all" @selected($eligibility === 'all')>All stocks</option>
+                <option value="eligible" @selected($eligibility === 'eligible')>Eligible ({{ $minimumDatapoints }}+ usable datapoints)</option>
+                <option value="ineligible" @selected($eligibility === 'ineligible')>Not eligible (&lt;{{ $minimumDatapoints }} usable datapoints)</option>
+            </select>
+        </div>
+        <div class="flex-1">
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Sort</label>
+            <select name="sort" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2">
+                <option value="symbol_asc" @selected($sort === 'symbol_asc')>Symbol A-Z</option>
+                <option value="datapoints_desc" @selected($sort === 'datapoints_desc')>Most datapoints first</option>
+                <option value="datapoints_asc" @selected($sort === 'datapoints_asc')>Fewest datapoints first</option>
+            </select>
+        </div>
+        <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700">Apply Filters</button>
+    </form>
+
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
@@ -67,9 +88,11 @@
                     <tr
                         class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Stock</th>
+                        <th class="px-6 py-4 font-semibold">Usable Datapoints</th>
                         <th class="px-6 py-4 font-semibold">LSTM Prediction (1M)</th>
                         <th class="px-6 py-4 font-semibold">XGBoost Prediction (1M)</th>
                         <th class="px-6 py-4 font-semibold">Random Forest (1M)</th>
+                        <th class="px-6 py-4 font-semibold">Moving Average Benchmark (1M)</th>
                         <th class="px-6 py-4 font-semibold text-right">Action</th>
                     </tr>
                 </thead>
@@ -79,6 +102,7 @@
                             $lstmPred = $stock->predictions->where('model_type', 'lstm')->last();
                             $xgbPred = $stock->predictions->where('model_type', 'xgboost')->last();
                             $rfPred = $stock->predictions->where('model_type', 'random_forest')->last();
+                            $maPred = $stock->predictions->where('model_type', 'moving_average')->last();
                         @endphp
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
                             <td class="px-6 py-4">
@@ -92,6 +116,14 @@
                                         <div class="text-xs text-gray-500 dark:text-gray-400">{{ $stock->name }}</div>
                                     </div>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-gray-700 dark:text-gray-200">{{ number_format($stock->datapoints_count) }}</div>
+                                @if($stock->datapoints_count >= $minimumDatapoints)
+                                    <span class="text-xs text-green-600 dark:text-green-400">Eligible</span>
+                                @else
+                                    <span class="text-xs text-red-600 dark:text-red-400">Not eligible</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 @if($lstmPred)
@@ -120,6 +152,15 @@
                                     <span class="text-xs text-gray-400 italic">No Data</span>
                                 @endif
                             </td>
+                            <td class="px-6 py-4">
+                                @if($maPred)
+                                    <div class="text-sm font-bold text-amber-600 dark:text-amber-400">
+                                        Rs. {{ number_format($maPred->predicted_price, 2) }}</div>
+                                    <div class="text-xs text-gray-500">{{ $maPred->target_date }}</div>
+                                @else
+                                    <span class="text-xs text-gray-400 italic">No Data</span>
+                                @endif
+                            </td>
 
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('stocks.show', $stock->symbol) }}"
@@ -136,6 +177,17 @@
                 </tbody>
             </table>
         </div>
+        @if($stocks->hasPages())
+            <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Showing {{ $stocks->firstItem() }} to {{ $stocks->lastItem() }}
+                        of {{ $stocks->total() }} stocks
+                    </p>
+                    {{ $stocks->onEachSide(1)->links() }}
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -157,9 +209,15 @@
                         class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold mr-3 mt-1">
                         2</div>
                     <div>
-                        <h5 class="font-bold text-gray-700 dark:text-gray-200">XGBoost Gradient Boosting</h5>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">An optimized distributed gradient boosting
-                            library designed to be highly efficient, flexible and portable.</p>
+                        <h5 class="font-bold text-gray-700 dark:text-gray-200">XGBoost-Style Gradient Boosting (Scratch)</h5>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Handwritten regularized regression trees trained sequentially on residual errors.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-bold mr-3 mt-1">4</div>
+                    <div>
+                        <h5 class="font-bold text-gray-700 dark:text-gray-200">Moving Average Benchmark</h5>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Uses one validation-selected window across all stocks as an interpretable benchmark.</p>
                     </div>
                 </div>
                 <div class="flex items-start">

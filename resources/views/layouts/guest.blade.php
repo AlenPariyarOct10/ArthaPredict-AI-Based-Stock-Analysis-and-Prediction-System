@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="shortcut icon" href="{{ asset('assets/images/Logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ \App\Models\AppSetting::getLogoUrl() }}" type="image/x-icon">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

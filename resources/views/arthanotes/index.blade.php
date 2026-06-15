@@ -264,8 +264,8 @@
                         </div>
                     @endif
 
-                    <!-- Interactions -->
-                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex items-center justify-between">
+                     <!-- Interactions -->
+                    <div class="px-5 py-3 border-t border-gray-100 w-full dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex items-center justify-between">
                         <div class="flex items-center gap-1 sm:gap-2">
                             @php
                                 $isLikedByUser = $note->likes->contains('user_id', auth()->id());
@@ -278,12 +278,12 @@
                                     <span class="arthanote-like-count bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full ml-1">{{ $note->likes_count }}</span>
                                 </button>
                             </form>
-                            
-                            <a href="{{ route('arthanotes.show', $note) }}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/5 transition-colors">
+
+                            <button type="button" @click="toggleComments({{ $note->id }})" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/5 transition-colors comment-toggle-btn" data-note-id="{{ $note->id }}">
                                 <i class="far fa-comment"></i>
                                 <span class="hidden sm:inline">Comment</span>
                                 <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full ml-1">{{ $note->all_comments_count }}</span>
-                            </a>
+                            </button>
                         </div>
 
                         @if(auth()->id() === $note->user_id || auth()->user()?->is_admin)
@@ -308,6 +308,65 @@
                             </div>
                         @endif
                     </div>
+                    <!-- Inline Comments Section -->
+                    <div class="comment-section hidden w-full max-w-3xl mx-auto" id="commentSection-{{ $note->id }}" x-data="{
+                        newComment: '',
+                        replyText: '',
+                        replyingTo: null,
+                        showReplyBox: {},
+                        loading: false
+                    }">
+                        <div class="border-t border-gray-100 w-full dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
+                            <!-- Comment Form -->
+                            <div class="p-4 border-b border-gray-100 dark:border-gray-800">
+                                <form method="POST" action="{{ route('arthanotes.comments.store', $note) }}" class="space-y-3 comment-form-ajax" data-note-id="{{ $note->id }}">
+                                    @csrf
+                                    <div class="flex gap-3">
+                                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm">
+                                            @if (Auth::user()->profile_image_url)
+                                                <img src="{{ Auth::user()->profile_image_url }}" class="w-full h-full object-cover" alt="Profile Image">
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-teal-600 text-white font-bold text-xs">
+                                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 space-y-2">
+                                            <textarea name="body" rows="2" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-gray-900 transition resize-none shadow-inner" placeholder="Write a comment..." required></textarea>
+                                            <div class="flex justify-end">
+                                                <button type="submit" class="inline-flex items-center px-4 py-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg transition-all shadow-sm" :disabled="loading">
+                                                    <span x-show="!loading">Post</span>
+                                                    <span x-show="loading">Posting...</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Comments List -->
+                            <div class="p-4 max-h-96 overflow-y-auto comment-list" id="commentList-{{ $note->id }}">
+                                @if($note->allComments->count() > 0)
+                                    <div class="space-y-3">
+                                        @foreach($note->allComments->take(5) as $comment)
+                                            @include('arthanotes._comment-inline', ['comment' => $comment, 'note' => $note, 'depth' => 0])
+                                        @endforeach
+                                        @if($note->allComments->count() > 5)
+                                            <button class="text-xs text-primary hover:text-primary/80 font-medium" onclick="loadMoreComments({{ $note->id }})">
+                                                Load more comments...
+                                            </button>
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="text-center py-6 text-gray-500 dark:text-gray-400">
+                                        <i class="far fa-comment-dots text-2xl mb-2"></i>
+                                        <p class="text-sm">No comments yet. Be the first to comment!</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Inline Comments Section -->
                 </article>
             @empty
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-12 text-center">
@@ -341,6 +400,16 @@
         document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
+            // Toggle comments section
+            window.toggleComments = function(noteId) {
+                const section = document.getElementById('commentSection-' + noteId);
+                if (section) {
+                    section.classList.toggle('hidden');
+                    section.classList.toggle('flex');
+                }
+            };
+
+            // Like toggle
             document.querySelectorAll('.arthanote-like-form').forEach((form) => {
                 form.addEventListener('submit', async function (event) {
                     event.preventDefault();
@@ -351,12 +420,12 @@
                     if (!button || !countEl || !iconEl) return;
 
                     const isLiked = form.dataset.liked === '1';
-                    
+
                     // Optimistic UI Update
                     form.dataset.liked = isLiked ? '0' : '1';
                     const currentCount = parseInt(countEl.textContent);
                     countEl.textContent = isLiked ? (currentCount - 1) : (currentCount + 1);
-                    
+
                     if (isLiked) {
                         // Unlike visual
                         button.classList.remove('text-red-500', 'dark:text-red-400');
@@ -413,6 +482,100 @@
                     }
                 });
             });
+
+            // Comment form submission (AJAX)
+            document.querySelectorAll('.comment-form-ajax').forEach((form) => {
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const button = form.querySelector('button[type="submit"]');
+                    const textarea = form.querySelector('textarea[name="body"]');
+                    const noteId = form.dataset.noteId;
+                    const commentList = document.getElementById('commentList-' + noteId);
+
+                    if (!textarea.value.trim()) return;
+
+                    button.disabled = true;
+                    button.innerHTML = '<span>Posting...</span>';
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken || '',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        });
+
+                        if (response.ok) {
+                            textarea.value = '';
+                            // Reload comments or add the new comment to the list
+                            loadComments(noteId);
+                        }
+                    } catch (error) {
+                        console.error('Error posting comment:', error);
+                    } finally {
+                        button.disabled = false;
+                        button.innerHTML = '<span>Post</span>';
+                    }
+                });
+            });
+
+            // Reply form submission (AJAX)
+            document.querySelectorAll('.reply-form').forEach((form) => {
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const button = form.querySelector('button[type="submit"]');
+                    const textarea = form.querySelector('textarea[name="body"]');
+                    const parentId = form.dataset.parentId;
+
+                    if (!textarea.value.trim()) return;
+
+                    button.disabled = true;
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken || '',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        });
+
+                        if (response.ok) {
+                            textarea.value = '';
+                            // Close reply box and refresh comments
+                            const noteId = form.closest('.comment-section').id.split('commentSection-')[1];
+                            loadComments(noteId);
+                        }
+                    } catch (error) {
+                        console.error('Error posting reply:', error);
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
         });
+
+        // Load comments for a note
+        async function loadComments(noteId) {
+            const commentList = document.getElementById('commentList-' + noteId);
+            if (!commentList) return;
+
+            try {
+                const response = await fetch('/arthanotes/' + noteId + '/comments');
+                if (response.ok) {
+                    const html = await response.text();
+                    commentList.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+            }
+        }
     </script>
 @endsection

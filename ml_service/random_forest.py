@@ -6,7 +6,6 @@ import hashlib
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
-from db import register_model_in_db
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -134,6 +133,7 @@ class RandomForestModelRegistry:
         self._save_metadata()
 
         try:
+            from db import register_model_in_db
             register_model_in_db(
                 symbol=symbol,
                 model_type="random_forest",
@@ -699,18 +699,21 @@ def train_random_forest_and_forecast(
                 forecast = np.array(forecast)
 
                 # Calculate metrics on validation set
+                # FIXED: Proper X/y alignment - features start at index 20, targets match
                 X_all = create_enhanced_features(close_prices)
+                y_all = close_prices[20:]  # Target: close price after feature window
+                
+                # Ensure same length
+                min_len = min(len(X_all), len(y_all))
+                X_all = X_all[:min_len]
+                y_all = y_all[:min_len]
+                
                 n = len(X_all)
                 split_idx = max(int(n * 0.80), 1)
 
                 if split_idx < n:
                     X_val = X_all[split_idx:]
-                    y_val = close_prices[split_idx + 20:]  # Adjust for feature window
-
-                    # Align lengths
-                    min_len = min(len(X_val), len(y_val))
-                    X_val = X_val[:min_len]
-                    y_val = y_val[:min_len]
+                    y_val = y_all[split_idx:]
 
                     if len(X_val) > 0:
                         eval_pred = model.predict(X_val)

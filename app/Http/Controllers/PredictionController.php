@@ -27,6 +27,7 @@ class PredictionController extends Controller
         $validated = $request->validate([
             'symbol' => 'required|exists:stocks,symbol',
             'model_type' => 'required|string',
+            'model_scope' => 'nullable|in:universal,individual',
             'predictions' => 'required|array',
             'predictions.*.target_date' => 'required|date',
             'predictions.*.predicted_price' => 'required|numeric',
@@ -39,6 +40,7 @@ class PredictionController extends Controller
             $stock->predictions()->updateOrCreate(
                 [
                     'model_type' => $validated['model_type'],
+                    'model_scope' => $validated['model_scope'] ?? 'universal',
                     'target_date' => $pred['target_date']
                 ],
                 [

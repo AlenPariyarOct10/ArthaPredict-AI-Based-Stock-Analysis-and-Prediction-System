@@ -10,6 +10,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ModelRegistryService;
+use Symfony\Component\Process\Process;
 
 class TrainUniversalModelJob implements ShouldQueue
 {
@@ -18,12 +20,12 @@ class TrainUniversalModelJob implements ShouldQueue
     public $modelType; // 'lstm', 'xgboost', or 'random_forest'
     public $userId;
     public $trainingJobId;
-    public $timeout = 600; // 10 minutes for universal model training
-    public $tries = 3;
+    public $timeout = 3600;
+    public $tries = 1;
     public $backoff = [60, 120, 240];
 
     private const LOCK_PREFIX = 'universal_model_training_lock_';
-    private const LOCK_TTL = 600;
+    private const LOCK_TTL = 3600;
 
     public function __construct(string $modelType, $userId, $trainingJobId)
     {
@@ -59,27 +61,63 @@ class TrainUniversalModelJob implements ShouldQueue
             ]);
 
             $pythonExecutable = config('services.python.executable', env('PYTHON_EXECUTABLE', 'python'));
-            $scriptPath = base_path("ml_service/{$this->modelType}_universal_model.py");
-
-            $command = sprintf(
-                '%s %s --train 2>&1',
-                escapeshellcmd($pythonExecutable),
-                escapeshellarg($scriptPath)
-            );
+            $scriptPath = base_path('ml_service/universal_model.py');
+            $process = new Process([
+                $pythonExecutable,
+                $scriptPath,
+                '--train',
+                '--algorithm',
+                $this->modelType,
+            ], base_path());
+            $process->setTimeout(3500);
 
             Log::info("Executing Universal Model Training", [
-                'command' => $command,
                 'model_type' => $this->modelType
             ]);
 
-            $output = shell_exec($command);
+            $process->run();
+            $output = trim($process->getOutput());
+            $result = $this->decodeLastJsonLine($output);
 
             Log::debug("Universal Model Training Raw Output", [
                 'model_type' => $this->modelType,
                 'output' => $output,
             ]);
 
-            // Mark job as completed and set processed_rows to total_rows (100% progress)
+            if (!$process->isSuccessful()) {
+                $message = $result['error']
+                    ?? (trim($process->getErrorOutput()) ?: $output);
+                throw new \RuntimeException("Universal training failed: {$message}");
+            }
+
+            if (!$result || ($result['status'] ?? null) !== 'ok') {
+                throw new \RuntimeException('Universal training returned an invalid response.');
+            }
+
+            $registry = app(ModelRegistryService::class);
+            $metadataPath = base_path('ml_service/models/universal/metadata.json');
+            $metadata = is_file($metadataPath)
+                ? json_decode(file_get_contents($metadataPath), true)
+                : [];
+            foreach ($result['models'] ?? [] as $model) {
+                $modelMetadata = $metadata[$model['algorithm']] ?? [];
+                $registry->registerUniversalModel([
+                    'model_type' => $model['algorithm'],
+                    'path' => $modelMetadata['model_path'] ?? $model['path'] ?? null,
+                    'latest_path' => $modelMetadata['latest_path'] ?? null,
+                    'metrics' => $model['metrics'] ?? [],
+                    'training_date' => $modelMetadata['training_date'] ?? now(),
+                    'data_length' => $modelMetadata['stock_count'] ?? null,
+                    'config' => array_merge(
+                        $modelMetadata['config'] ?? [],
+                        [
+                            'symbol_to_index' => $modelMetadata['symbol_to_index'] ?? [],
+                            'benchmark' => $modelMetadata['extra']['benchmark'] ?? false,
+                        ]
+                    ),
+                ]);
+            }
+
             $trainingJob->update([
                 'status' => 'completed',
                 'completed_at' => now(),
@@ -87,7 +125,7 @@ class TrainUniversalModelJob implements ShouldQueue
                 'processed_rows' => $trainingJob->total_rows,
                 'meta' => [
                     'model_type' => $this->modelType,
-                    'output' => $output
+                    'models' => $result['models'] ?? [],
                 ]
             ]);
 
@@ -114,5 +152,17 @@ class TrainUniversalModelJob implements ShouldQueue
         } finally {
             $lock->release();
         }
+    }
+
+    private function decodeLastJsonLine(string $output): ?array
+    {
+        $lines = array_reverse(preg_split('/\r\n|\r|\n/', $output) ?: []);
+        foreach ($lines as $line) {
+            $decoded = json_decode(trim($line), true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return null;
     }
 }

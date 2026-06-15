@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
             <h3 class="text-gray-700 dark:text-gray-200 text-3xl font-bold">Stocks List</h3>
             <p class="mt-1 text-gray-500 dark:text-gray-400">Browse all available stocks and technical analytics.</p>
         </div>
-        <div class="mt-4 md:mt-0 relative">
-            <form method="GET" action="{{ route('stocks.index') }}" class="w-full">
+        <form method="GET" action="{{ route('stocks.index') }}" class="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+            <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
                         <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
@@ -15,9 +15,19 @@
                     </svg>
                 </span>
                 <input type="text" name="search" value="{{ $search ?? '' }}" class="w-full md:w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-200 transition-colors" placeholder="Search by symbol...">
-            </form>
-        </div>
-        
+            </div>
+            <select name="eligibility" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2">
+                <option value="all" @selected($eligibility === 'all')>All eligibility</option>
+                <option value="eligible" @selected($eligibility === 'eligible')>Eligible ({{ $minimumDatapoints }}+)</option>
+                <option value="ineligible" @selected($eligibility === 'ineligible')>Not eligible (&lt;{{ $minimumDatapoints }})</option>
+            </select>
+            <select name="sort" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-2">
+                <option value="symbol_asc" @selected($sort === 'symbol_asc')>Symbol A-Z</option>
+                <option value="datapoints_desc" @selected($sort === 'datapoints_desc')>Most datapoints</option>
+                <option value="datapoints_asc" @selected($sort === 'datapoints_asc')>Fewest datapoints</option>
+            </select>
+            <button class="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700">Apply</button>
+        </form>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
@@ -29,6 +39,8 @@
                         <th class="px-6 py-4">Symbol</th>
                         <th class="px-6 py-4">Company Name</th>
                         <th class="px-6 py-4 text-right">Last Price</th>
+                        <th class="px-6 py-4 text-center">Usable Datapoints</th>
+                        <th class="px-6 py-4 text-center">Eligibility</th>
                         <th class="px-6 py-4">Exchange</th>
                         <th class="px-6 py-4 text-center">Actions</th>
                     </tr>
@@ -43,10 +55,18 @@
                                 {{ $stock->name }}
                             </td>
                             <td class="px-6 py-4 text-right font-medium text-gray-800 dark:text-gray-200">
-                                @php
-                                    $latest = $stock->prices()->latest('date')->first();
-                                @endphp
+                                @php $latest = $stock->latestPrice; @endphp
                                 {{ $latest ? 'Rs.' . number_format($latest->close, 2) : 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-200">
+                                {{ number_format($stock->datapoints_count) }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                @if($stock->datapoints_count >= $minimumDatapoints)
+                                    <span class="px-2 py-1 text-xs rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Eligible</span>
+                                @else
+                                    <span class="px-2 py-1 text-xs rounded-md bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Not eligible</span>
+                                @endif
                             </td>
 
                             <td class="px-6 py-4">
@@ -64,7 +84,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
                                 <div class="flex flex-col items-center">
                                     <svg class="w-12 h-12 mb-3 text-gray-300 dark:text-gray-600" fill="none"
                                         stroke="currentColor" viewBox="0 0 24 24">

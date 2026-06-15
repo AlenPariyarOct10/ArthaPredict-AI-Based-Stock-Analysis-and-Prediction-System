@@ -45,4 +45,12 @@ class ArthaNote extends Model
     {
         return $this->hasMany(ArthaNoteLike::class);
     }
+
+    /**
+     * Get all comments with nested replies.
+     */
+    public function allCommentsWithReplies()
+    {
+        return $this->allComments()->with(['user', 'replies.user'])->orderBy('created_at', 'desc');
+    }
 }

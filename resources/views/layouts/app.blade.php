@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#0078d7">
 
-    <title>{{ config('app.name', 'ArthaPredict') }}</title>
-    <link rel="shortcut icon" href="{{ asset('assets/images/Logo.png') }}" type="image/x-icon">
+    <title>{{ \App\Models\AppSetting::getAppName() }}</title>
+    <link rel="shortcut icon" href="{{ \App\Models\AppSetting::getLogoUrl() }}" type="image/x-icon">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -310,19 +310,19 @@
     // Sync dark mode state from HTML on page load
     darkMode = document.documentElement.classList.contains('dark');
 ">
-    <div class="min-h-screen flex overflow-hidden">
+    <div class="h-screen flex overflow-hidden">
 
         <!-- Sidebar -->
         <div :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-            class="fixed z-50 inset-y-0 left-0 w-64 transition duration-300 transform bg-card dark:bg-card overflow-y-auto lg:translate-x-0 lg:static lg:inset-auto border-r border-border dark:border-border">
-            <!-- Logo -->
+            class="w-64 flex flex-col overflow-hidden lg:translate-x-0 lg:static transition duration-300 transform bg-card dark:bg-card border-r border-border dark:border-border">
+            <!-- Logo / Header -->
             <div class="flex items-center justify-between p-6 border-b border-border dark:border-border">
                 <div class="flex items-center gap-3">
-                    <img class="w-8 h-8" src="{{ asset('assets/images/Logo.png') }}" alt="" srcset="">
+                    <img class="w-8 h-8" src="{{ \App\Models\AppSetting::getLogoUrl() }}" alt="Logo">
                     <div>
                         <div
                             class="font-bold text-lg text-primary dark:text-primary-light">
-                            ArthaPredict
+                            {{ \App\Models\AppSetting::getAppName() }}
                         </div>
                         <div class="text-xs text-muted-foreground">Stock Analysis</div>
                     </div>
@@ -335,8 +335,8 @@
                 </button>
             </div>
 
-            <!-- Navigation -->
-            <nav class="mt-8 px-4 space-y-2">
+            <!-- Navigation - Scrollable -->
+            <nav class="flex-1 overflow-y-auto py-4 space-y-2">
                 <a class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium {{ request()->routeIs('dashboard') ? 'nav-active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100' }}"
                     href="{{ route('dashboard') }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -429,9 +429,8 @@
                 @endif
             </nav>
 
-            <!-- Sidebar Footer -->
-            <div
-                class="absolute bottom-0 left-0 right-0 p-4 border-t border-border dark:border-border bg-card dark:bg-card">
+            <!-- Sidebar Footer - Fixed at bottom -->
+            <div class="p-4 border-t border-border dark:border-border bg-card dark:bg-card">
                 <a href="{{ route('profile.edit') }}"
                     class="flex items-center px-4 py-3 rounded-lg transition font-medium text-muted-foreground hover:bg-muted dark:hover:bg-secondary">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -528,7 +527,8 @@
             </header>
 
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-background dark:bg-background">
+            <main class="flex-1 overflow-hidden">
+                <div class="h-full overflow-y-auto overflow-x-hidden bg-background dark:bg-background">
                 <div class="container mx-auto px-4 md:px-6 py-8">
                     @isset($header)
                         <div class="mb-0">

@@ -7,6 +7,40 @@ use App\Models\TrainedModel;
 
 class ModelRegistryService
 {
+    public function registerUniversalModel(array $data): TrainedModel
+    {
+        TrainedModel::whereNull('stock_id')
+            ->where('model_type', $data['model_type'])
+            ->where('model_scope', 'universal')
+            ->update(['is_active' => false]);
+
+        $metrics = $data['metrics'] ?? [];
+
+        return TrainedModel::create([
+            'stock_id' => null,
+            'stock_symbol' => 'UNIVERSAL',
+            'model_type' => $data['model_type'],
+            'model_scope' => 'universal',
+            'model_path' => $data['path'] ?? null,
+            'latest_path' => $data['latest_path'] ?? null,
+            'fingerprint' => $data['fingerprint'] ?? null,
+            'training_date' => $data['training_date'] ?? now(),
+            'data_length' => $data['data_length'] ?? null,
+            'config_json' => $data['config'] ?? null,
+            'is_active' => true,
+            'mse' => $metrics['mse'] ?? null,
+            'mae' => $metrics['mae'] ?? null,
+            'rmse' => $metrics['rmse'] ?? null,
+            'mape' => $metrics['mape'] ?? null,
+            'r2' => $metrics['r2'] ?? null,
+            'directional_accuracy' => isset($metrics['directional_accuracy'])
+                ? floatval(str_replace('%', '', $metrics['directional_accuracy']))
+                : null,
+            'confidence_score' => null,
+            'training_loss' => $metrics['training_loss'] ?? null,
+        ]);
+    }
+
     /**
      * Register a new trained model.
      * Deactivates previous models of the same type for the stock.
@@ -16,6 +50,7 @@ class ModelRegistryService
         // Deactivate old models of this type
         TrainedModel::where('stock_id', $stock->id)
             ->where('model_type', $data['model_type'])
+            ->where('model_scope', 'individual')
             ->update(['is_active' => false]);
 
         $metrics = $data['metrics'] ?? [];
@@ -24,6 +59,7 @@ class ModelRegistryService
             'stock_id'             => $stock->id,
             'stock_symbol'         => $stock->symbol,
             'model_type'           => $data['model_type'],
+            'model_scope'          => 'individual',
 
             // Fix: map Python keys → DB column names
             'model_path'           => $data['path']        ?? $data['model_path']    ?? null,
@@ -42,6 +78,7 @@ class ModelRegistryService
             'mape'                 => isset($metrics['mape'])
                 ? floatval(str_replace('%', '', $metrics['mape']))
                 : null,
+            'r2'                   => $metrics['r2'] ?? $metrics['r2_score'] ?? null,
             'directional_accuracy' => isset($metrics['directional_accuracy'])
                 ? floatval(str_replace('%', '', $metrics['directional_accuracy']))
                 : null,
@@ -61,6 +98,7 @@ class ModelRegistryService
     {
         return TrainedModel::where('stock_id', $stock->id)
             ->where('model_type', $modelType)
+            ->where('model_scope', 'individual')
             ->where('is_active', true)
             ->first();
     }

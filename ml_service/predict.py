@@ -16,8 +16,6 @@ try:
     import pandas as pd
     from datetime import timedelta
     from sqlalchemy import create_engine, text
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.metrics import mean_squared_error, r2_score
     from lstm import train_and_forecast
     from xgboost import train_xgboost_and_forecast
 except Exception as _import_error:
@@ -25,6 +23,17 @@ except Exception as _import_error:
     sys.exit(1)
 
 warnings.filterwarnings('ignore')
+
+
+class StandardScaler:
+    """Small compatibility scaler implemented with NumPy."""
+
+    def fit_transform(self, values):
+        values = np.asarray(values, dtype=float)
+        self.mean_ = np.mean(values, axis=0)
+        self.scale_ = np.std(values, axis=0)
+        self.scale_ = np.where(self.scale_ < 1e-12, 1.0, self.scale_)
+        return (values - self.mean_) / self.scale_
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -178,30 +187,32 @@ def preprocess_data(df):
 
 def train_ma_model(df, window=20):
     """
-    Evaluate the Moving Average as a 1-step-ahead baseline on the full history.
-
-    Prediction at time t: mean of the previous `window` close prices.
-    The shift(1) ensures no data leakage (we use past values only).
-    MSE and R² are reported on all rows where a prediction is available.
-
-    NOTE: In-sample evaluation is acceptable HERE because MA is a non-parametric
-    baseline — it has no trainable parameters that could overfit to the training
-    data.  The comparison against LSTM / XGBoost is still meaningful since those
-    models ARE evaluated on a held-out validation set.
+    Evaluate the Moving Average as a 1-step-ahead baseline.
+    
+    FIXED: Now evaluates on validation set only (same as LSTM/XGBoost)
+    for fair comparison.
     """
-    y_pred    = df['close'].rolling(window=window, min_periods=1).mean().shift(1)
+    # Split data same way as other models (80/20)
+    split_idx = int(len(df) * 0.80)
+    df_val = df.iloc[split_idx:].copy()
+    
+    # Compute MA predictions only on validation set
+    y_pred = df_val['close'].rolling(window=window, min_periods=1).mean().shift(1)
     valid_idx = y_pred.notna()
-    y_true    = df['close'][valid_idx]
-    y_pred_v  = y_pred[valid_idx]
+    y_true = df_val['close'][valid_idx]
+    y_pred_v = y_pred[valid_idx]
 
     if len(y_true) > 0:
-        mse = mean_squared_error(y_true, y_pred_v)
-        r2  = r2_score(y_true, y_pred_v)
+        errors = np.asarray(y_pred_v, dtype=float) - np.asarray(y_true, dtype=float)
+        mse = float(np.mean(errors ** 2))
+        total = float(np.sum((np.asarray(y_true) - np.mean(y_true)) ** 2))
+        r2 = 1.0 - float(np.sum(errors ** 2)) / total if total > 1e-12 else 0.0
     else:
         mse, r2 = 0.0, 0.0
 
     sys.stderr.write(
         f"--- BASELINE (Moving Average, window={window}) ---\n"
+        f"Evaluated on VALIDATION SET (last {len(df_val)} rows)\n"
         f"MSE: {mse:.4f}, R²: {r2:.4f}\n"
     )
     return mse, r2

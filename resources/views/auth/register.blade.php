@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#2d3748">
-    <title>ArthaPredict - Create Account</title>
-    <meta name="description" content="Create your ArthaPredict account and start analyzing stocks with AI">
-    <link rel="shortcut icon" href="{{ asset('assets/images/Logo.png') }}" type="image/x-icon">
-    
+    <title>{{ \App\Models\AppSetting::getAppName() }} - Create Account</title>
+    <meta name="description" content="Create your {{ \App\Models\AppSetting::getAppName() }} account and start analyzing stocks with AI">
+    <link rel="shortcut icon" href="{{ \App\Models\AppSetting::getLogoUrl() }}" type="image/x-icon">
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Apply theme immediately before page renders -->
@@ -19,7 +19,7 @@
         (function() {
             const theme = localStorage.getItem('theme');
             const darkMode = localStorage.getItem('darkMode');
-            const isDark = theme === 'dark' || darkMode === 'true' || 
+            const isDark = theme === 'dark' || darkMode === 'true' ||
                           (!theme && !darkMode && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (isDark) {
                 document.documentElement.classList.add('dark');
@@ -63,11 +63,11 @@
             <div class="flex justify-between items-center h-16">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                        <img class="w-8 h-8" src="{{ asset('assets/images/Logo.png') }}" alt="" srcset="">
+                        <img class="w-8 h-8" src="{{ \App\Models\AppSetting::getLogoUrl() }}" alt="Logo">
                     </div>
                     <span
                         class="text-lg font-bold text-primary dark:text-primary-light">
-                        ArthaPredict
+                        {{ \App\Models\AppSetting::getAppName() }}
                     </span>
                 </a>
                 <div class="flex items-center gap-4">

@@ -31,7 +31,7 @@
         </div>
 
         <!-- Action Buttons Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-2">
             <!-- Export Data Button -->
             <a href="{{ route('stocks.export', $stock->symbol) }}"
                class="px-3 sm:px-4 py-2 bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-700 text-purple-700 dark:text-purple-100 shadow-sm rounded-lg hover:bg-purple-100 dark:hover:bg-purple-800 transition flex items-center justify-center sm:justify-start gap-2 text-sm sm:text-base font-medium">
@@ -40,6 +40,15 @@
                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                 </svg>
                 <span class="truncate">Export Data</span>
+            </a>
+
+            <a href="{{ route('stocks.analysis_report', $stock->symbol) }}"
+               class="px-3 sm:px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-200 shadow-sm rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900 transition flex items-center justify-center sm:justify-start gap-2 text-sm sm:text-base font-medium">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2zM12 3v5h5"></path>
+                </svg>
+                <span class="truncate">Analysis PDF</span>
             </a>
 
             <!-- Calc Trend Button -->
@@ -117,9 +126,19 @@
 
     <div class="mt-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 mb-4">
                 <h4 class="text-xl font-semibold text-gray-800 dark:text-white">Price History & Predictions</h4>
-                <div class="flex space-x-2">
+                <div class="flex flex-wrap gap-2">
+                    <div class="flex gap-2 mr-2">
+                        <button type="button" data-chart-scope="universal" aria-pressed="true"
+                                class="chart-scope-btn px-3 py-1 text-sm rounded-md transition font-medium bg-blue-600 text-white">
+                            General
+                        </button>
+                        <button type="button" data-chart-scope="individual" aria-pressed="true"
+                                class="chart-scope-btn px-3 py-1 text-sm rounded-md transition font-medium bg-purple-600 text-white">
+                            Individual
+                        </button>
+                    </div>
                     <button type="button" data-range="1M"
                             class="chart-range-btn px-3 py-1 text-sm bg-blue-50 text-blue-600 dark:bg-blue-900 hover:bg-blue-100 rounded-md transition font-medium">1M</button>
                     <button type="button" data-range="3M"
@@ -128,7 +147,22 @@
                             class="chart-range-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 rounded-md transition">1Y</button>
                 </div>
             </div>
-            <div id="stock-chart" class="w-full h-96"></div>
+            <div id="prediction-chart-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div data-chart-panel="universal" class="rounded-xl border border-blue-100 dark:border-blue-900/50 p-4">
+                    <div class="mb-3">
+                        <h5 class="font-bold text-gray-800 dark:text-white">General Model Predictions</h5>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Universal models trained across all eligible stocks.</p>
+                    </div>
+                    <div id="general-stock-chart" class="w-full h-96"></div>
+                </div>
+                <div data-chart-panel="individual" class="rounded-xl border border-purple-100 dark:border-purple-900/50 p-4">
+                    <div class="mb-3">
+                        <h5 class="font-bold text-gray-800 dark:text-white">Individual Model Predictions</h5>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Stock-specific models trained only with {{ $stock->symbol }} history.</p>
+                    </div>
+                    <div id="individual-stock-chart" class="w-full h-96"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -156,13 +190,23 @@
 
     <!-- AI Forecast Predictions -->
     <div class="mt-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
             <h4 class="text-xl font-semibold text-gray-800 dark:text-white">AI Forecast Predictions</h4>
-            @if($latest)
-                <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3.5 py-1 rounded-full font-medium">
-                    Latest Price Date: {{ \Carbon\Carbon::parse($latest->date)->format('M d, Y') }}
-                </span>
-            @endif
+            <div class="flex flex-wrap items-center gap-2">
+                <button type="button" data-ai-scope-toggle="universal" aria-pressed="true"
+                        class="ai-scope-toggle px-3 py-1.5 text-xs rounded-md font-medium bg-blue-600 text-white">
+                    General: Expanded
+                </button>
+                <button type="button" data-ai-scope-toggle="individual" aria-pressed="true"
+                        class="ai-scope-toggle px-3 py-1.5 text-xs rounded-md font-medium bg-purple-600 text-white">
+                    Individual: Expanded
+                </button>
+                @if($latest)
+                    <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3.5 py-1 rounded-full font-medium">
+                        Latest Price Date: {{ \Carbon\Carbon::parse($latest->date)->format('M d, Y') }}
+                    </span>
+                @endif
+            </div>
         </div>
 
         @if($predictions->count())
@@ -172,6 +216,81 @@
                 });
                 $latestDate = $latest ? \Carbon\Carbon::parse($latest->date)->startOfDay() : now()->startOfDay();
             @endphp
+
+            @if($modelComparisons->isNotEmpty())
+                <div class="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-5">
+                    @foreach(['universal' => 'General Model', 'individual' => 'Individual Model'] as $scope => $scopeLabel)
+                        @php
+                            $comparison = $modelComparisons->get($scope, collect());
+                            $recommended = $recommendedModels->get($scope);
+                            $bestOverall = $bestOverallModels->get($scope);
+                        @endphp
+                        <details open data-performance-scope="{{ $scope }}"
+                                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+                            <summary class="px-5 py-4 cursor-pointer select-none flex items-center justify-between border-b border-gray-100 dark:border-gray-700">
+                                <div>
+                                    <h5 class="font-bold text-gray-800 dark:text-white">{{ $scopeLabel }} Performance</h5>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        {{ $scope === 'universal' ? 'Trained across all eligible stocks.' : 'Trained only with '.$stock->symbol.' history.' }}
+                                    </p>
+                                </div>
+                                <span class="text-xs font-medium text-gray-500">Show / hide</span>
+                            </summary>
+                            @if($comparison->isNotEmpty())
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400">
+                                            <tr>
+                                                <th class="px-3 py-2 text-left">Model</th>
+                                                <th class="px-3 py-2 text-right">RMSE</th>
+                                                <th class="px-3 py-2 text-right">MAE</th>
+                                                <th class="px-3 py-2 text-right">MAPE</th>
+                                                <th class="px-3 py-2 text-right">R²</th>
+                                                <th class="px-3 py-2 text-right">Direction</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                                            @foreach($comparison->sortBy('mape') as $model)
+                                                <tr>
+                                                    <td class="px-3 py-2 font-semibold">
+                                                        {{ ucwords(str_replace('_', ' ', $model['model_type'])) }}
+                                                        @if($model['benchmark'])
+                                                            <span class="text-[9px] rounded bg-amber-100 text-amber-700 px-1 py-0.5">Benchmark</span>
+                                                        @endif
+                                                        @if($recommended && $recommended['model_type'] === $model['model_type'])
+                                                            <span class="text-[9px] rounded bg-blue-100 text-blue-700 px-1 py-0.5">Recommended</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="px-3 py-2 text-right">{{ number_format($model['rmse'], 2) }}</td>
+                                                    <td class="px-3 py-2 text-right">{{ number_format($model['mae'], 2) }}</td>
+                                                    <td class="px-3 py-2 text-right">{{ number_format($model['mape'], 2) }}%</td>
+                                                    <td class="px-3 py-2 text-right">{{ number_format($model['r2'], 3) }}</td>
+                                                    <td class="px-3 py-2 text-right">{{ number_format($model['directional_accuracy'], 2) }}%</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if($recommended)
+                                    <div class="px-5 py-3 bg-blue-50 dark:bg-blue-900/20 text-xs text-gray-700 dark:text-gray-300">
+                                        Recommended learned model: <strong>{{ ucwords(str_replace('_', ' ', $recommended['model_type'])) }}</strong>.
+                                        @if($bestOverall && $bestOverall['benchmark'])
+                                            Moving Average remains the lowest-error benchmark.
+                                        @endif
+                                    </div>
+                                @endif
+                            @else
+                                <div class="p-5 text-sm text-gray-500 dark:text-gray-400">
+                                    No {{ strtolower($scopeLabel) }} metrics are available. Train this scope to enable comparison.
+                                </div>
+                            @endif
+                        </details>
+                    @endforeach
+                </div>
+                <p class="mb-5 text-xs text-gray-500 dark:text-gray-400">
+                    Metrics use chronological held-out test data. General and individual results are evaluated independently.
+                </p>
+            @endif
 
             <div class="space-y-6">
                 @foreach($groupedByDate as $date => $datePredictions)
@@ -205,44 +324,63 @@
                             <span class="text-xs text-gray-400 dark:text-gray-500">{{ $datePredictions->count() }} model{{ $datePredictions->count() > 1 ? 's' : '' }}</span>
                         </div>
 
-                        <!-- Model Predictions for this date -->
-                        <div class="grid grid-cols-1 md:grid-cols-{{ min($datePredictions->count(), 3) }} divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700">
-                            @foreach($datePredictions as $prediction)
-                                <div class="p-5 relative group">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 opacity-0 group-hover:opacity-100 transition duration-300 z-0"></div>
-                                    <div class="relative z-10">
-                                        <div class="flex items-center justify-between mb-3">
-                                            <h5 class="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wide">{{ $prediction->model_type }}</h5>
+                        <div class="p-4 space-y-4">
+                            @foreach(['universal' => 'General Model Predictions', 'individual' => 'Individual Model Predictions'] as $scope => $scopeLabel)
+                                @php
+                                    $scopePredictions = $datePredictions->where('model_scope', $scope);
+                                @endphp
+                                <details open data-prediction-scope="{{ $scope }}"
+                                         class="rounded-lg border {{ $scope === 'universal' ? 'border-blue-200 dark:border-blue-800' : 'border-purple-200 dark:border-purple-800' }} overflow-hidden">
+                                    <summary class="cursor-pointer select-none px-4 py-3 flex items-center justify-between {{ $scope === 'universal' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-purple-50 dark:bg-purple-900/20' }}">
+                                        <span class="font-bold text-sm text-gray-700 dark:text-gray-200">{{ $scopeLabel }}</span>
+                                        <span class="text-xs text-gray-500">{{ $scopePredictions->count() }} algorithm{{ $scopePredictions->count() === 1 ? '' : 's' }} · Show / hide</span>
+                                    </summary>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 p-4">
+                                        @foreach(['lstm', 'xgboost', 'random_forest', 'moving_average'] as $modelType)
                                             @php
-                                                $latest = $historicalData->last();
+                                                $prediction = $scopePredictions->firstWhere('model_type', $modelType);
                                                 $currentPrice = $latest ? $latest->close : null;
-                                                $change = $currentPrice ? (($prediction->predicted_price - $currentPrice) / $currentPrice) * 100 : null;
+                                                $change = $prediction && $currentPrice
+                                                    ? (($prediction->predicted_price - $currentPrice) / $currentPrice) * 100
+                                                    : null;
                                             @endphp
-                                            @if($change !== null)
-                                                <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $change >= 0 ? 'bg-blue-100 text-green-700 dark:bg-blue-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' }}">
-                                                    {{ $change >= 0 ? '+' : '' }}{{ number_format($change, 2) }}%
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        <div class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
-                                            Rs. {{ number_format($prediction->predicted_price, 2) }}
-                                        </div>
-
-                                        @if($prediction->additional_metrics)
-                                            <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 text-xs space-y-1">
-                                                @if(is_iterable($prediction->additional_metrics))
-                                                    @foreach(collect($prediction->additional_metrics)->only(['confidence_score', 'mape', 'directional_accuracy']) as $key => $value)
-                                                        <div class="flex justify-between">
-                                                            <span class="text-gray-500 dark:text-gray-400">{{ ucwords(str_replace('_', ' ', (string) $key)) }}</span>
-                                                            <span class="font-medium text-gray-700 dark:text-gray-300">{{ is_scalar($value) ? $value : json_encode($value) }}</span>
-                                                        </div>
-                                                    @endforeach
+                                            <div class="rounded-lg border {{ $scope === 'universal' ? 'border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10' : 'border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/10' }} p-4">
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <span class="text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">
+                                                        {{ str_replace('_', ' ', $modelType) }}
+                                                        @if($modelType === 'moving_average')
+                                                            <span class="normal-case text-[9px] text-amber-700">Benchmark</span>
+                                                        @endif
+                                                    </span>
+                                                    @if($change !== null)
+                                                        <span class="text-xs font-semibold {{ $change >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                                            {{ $change >= 0 ? '+' : '' }}{{ number_format($change, 2) }}%
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                @if($prediction)
+                                                    <div class="mt-2 text-2xl font-extrabold {{ $scope === 'universal' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                                                        Rs. {{ number_format($prediction->predicted_price, 2) }}
+                                                    </div>
+                                                    <div class="mt-3 text-xs space-y-1">
+                                                        @foreach(collect($prediction->additional_metrics)->only(['rmse', 'mae', 'mape', 'r2', 'directional_accuracy']) as $key => $value)
+                                                            <div class="flex justify-between">
+                                                                <span class="text-gray-500">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
+                                                                <span class="font-medium">
+                                                                    {{ in_array($key, ['mape', 'directional_accuracy']) ? number_format((float) $value, 2).'%' : number_format((float) $value, $key === 'r2' ? 3 : 2) }}
+                                                                </span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <div class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                                                        Not available. Train the {{ strtolower($scopeLabel) }} model.
+                                                    </div>
                                                 @endif
                                             </div>
-                                        @endif
+                                        @endforeach
                                     </div>
-                                </div>
+                                </details>
                             @endforeach
                         </div>
                     </div>
@@ -265,8 +403,14 @@
         document.addEventListener('DOMContentLoaded', function () {
             const initialHistoryData = @json($historicalData);
             const predictionData = @json($predictions);
-            const chartContainer = document.querySelector("#stock-chart");
+            const chartContainers = {
+                universal: document.querySelector("#general-stock-chart"),
+                individual: document.querySelector("#individual-stock-chart")
+            };
+            const chartGrid = document.querySelector("#prediction-chart-grid");
             const rangeButtons = document.querySelectorAll('.chart-range-btn');
+            const chartScopeButtons = document.querySelectorAll('.chart-scope-btn');
+            const aiScopeButtons = document.querySelectorAll('.ai-scope-toggle');
             const chartApiUrl = @json(route('stocks.api.chart', $stock->symbol));
 
             function buildActualSeries(historyData) {
@@ -278,29 +422,40 @@
                     }));
             }
 
-            function buildPredictionSeries(actualPrices) {
-                if (!actualPrices.length || !predictionData.length) {
+            const modelPresentation = {
+                lstm: { name: 'LSTM', color: '#8b5cf6' },
+                xgboost: { name: 'XGBoost', color: '#f97316' },
+                random_forest: { name: 'Random Forest', color: '#10b981' },
+                moving_average: { name: 'Moving Average Benchmark', color: '#eab308' }
+            };
+            function buildPredictionSeries(actualPrices, modelScope) {
+                if (!actualPrices.length) {
                     return [];
                 }
 
                 const lastActual = actualPrices[actualPrices.length - 1];
-                const predPoints = [lastActual];
+                return Object.entries(modelPresentation).map(([modelType, presentation]) => {
+                    const points = predictionData
+                        .filter(p => p.model_type === modelType && p.model_scope === modelScope)
+                        .sort((a, b) => new Date(a.target_date) - new Date(b.target_date))
+                        .map(p => ({
+                            x: new Date(p.target_date).getTime(),
+                            y: Number(parseFloat(p.predicted_price).toFixed(2))
+                        }));
 
-                predictionData.forEach(p => {
-                    predPoints.push({
-                        x: new Date(p.target_date).getTime(),
-                        y: Number(parseFloat(p.predicted_price).toFixed(2))
-                    });
+                    return {
+                        name: presentation.name,
+                        type: 'line',
+                        data: points.length ? [lastActual, ...points] : []
+                    };
                 });
-
-                return predPoints;
             }
 
             let actualPrices = buildActualSeries(initialHistoryData);
-            let predPoints = buildPredictionSeries(actualPrices);
 
             if (!actualPrices.length) {
-                chartContainer.innerHTML = `
+                Object.values(chartContainers).forEach(chartContainer => {
+                    chartContainer.innerHTML = `
                         <div class="h-full flex items-center justify-center text-center text-gray-500 dark:text-gray-400">
                             <div>
                                 <div class="text-lg font-medium">No price history available</div>
@@ -308,57 +463,103 @@
                             </div>
                         </div>
                     `;
+                });
                 return;
             }
 
-            var options = {
-                series: [
-                    {
-                        name: 'Actual Price',
-                        type: 'area',
-                        data: actualPrices
-                    },
-                    {
-                        name: 'Predicted Price',
+            function chartOptions(modelScope) {
+                return {
+                    series: [
+                        { name: 'Actual Price', type: 'area', data: actualPrices },
+                        ...buildPredictionSeries(actualPrices, modelScope)
+                    ],
+                    chart: {
+                        height: 400,
                         type: 'line',
-                        data: predPoints
+                        background: 'transparent',
+                        toolbar: { show: true },
+                        fontFamily: 'Inter, sans-serif'
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2,
+                        dashArray: [0, 5, 5, 5, 5]
+                    },
+                    fill: {
+                        type: ['gradient', 'solid', 'solid', 'solid', 'solid'],
+                        opacity: [0.3, 1, 1, 1, 1],
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.4,
+                            opacityTo: 0.05,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: [
+                        '#3b82f6',
+                        ...Object.values(modelPresentation).map(model => model.color)
+                    ],
+                    xaxis: { type: 'datetime' },
+                    theme: {
+                        mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                    },
+                    legend: { position: 'top' },
+                    noData: {
+                        text: modelScope === 'individual'
+                            ? 'Train individual models to display predictions.'
+                            : 'No general model predictions available.'
                     }
-                ],
-                chart: {
-                    height: 400,
-                    type: 'line',
-                    background: 'transparent',
-                    toolbar: { show: true },
-                    fontFamily: 'Inter, sans-serif'
-                },
-                stroke: {
-                    curve: 'smooth',
-                    width: [2, 3],
-                    dashArray: [0, 5]
-                },
-                fill: {
-                    type: ['gradient', 'solid'],
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.4,
-                        opacityTo: 0.05,
-                        stops: [0, 100]
-                    }
-                },
-                colors: ['#3b82f6', '#10b981'],
-                xaxis: {
-                    type: 'datetime'
-                },
-                theme: {
-                    mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-                },
-                legend: {
-                    position: 'top'
-                }
-            };
+                };
+            }
 
-            var chart = new ApexCharts(chartContainer, options);
-            chart.render();
+            const charts = {
+                universal: new ApexCharts(
+                    chartContainers.universal,
+                    chartOptions('universal')
+                ),
+                individual: new ApexCharts(
+                    chartContainers.individual,
+                    chartOptions('individual')
+                )
+            };
+            Object.values(charts).forEach(chart => chart.render());
+
+            chartScopeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const scope = button.dataset.chartScope;
+                    const panel = document.querySelector(`[data-chart-panel="${scope}"]`);
+                    const nextVisible = panel.classList.contains('hidden');
+                    panel.classList.toggle('hidden', !nextVisible);
+                    button.setAttribute('aria-pressed', String(nextVisible));
+                    button.classList.toggle('opacity-40', !nextVisible);
+                    button.textContent = scope === 'universal'
+                        ? `General${nextVisible ? '' : ' (Hidden)'}`
+                        : `Individual${nextVisible ? '' : ' (Hidden)'}`;
+
+                    const visiblePanels = document.querySelectorAll('[data-chart-panel]:not(.hidden)').length;
+                    chartGrid.classList.toggle('xl:grid-cols-2', visiblePanels > 1);
+                    chartGrid.classList.toggle('xl:grid-cols-1', visiblePanels === 1);
+                    window.setTimeout(() => {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 50);
+                });
+            });
+
+            aiScopeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const scope = button.dataset.aiScopeToggle;
+                    const sections = document.querySelectorAll(
+                        `[data-performance-scope="${scope}"], [data-prediction-scope="${scope}"]`
+                    );
+                    const shouldOpen = !Array.from(sections).every(section => section.open);
+                    sections.forEach(section => {
+                        section.open = shouldOpen;
+                    });
+                    button.setAttribute('aria-pressed', String(shouldOpen));
+                    button.classList.toggle('opacity-50', !shouldOpen);
+                    button.textContent = `${scope === 'universal' ? 'General' : 'Individual'}: ${shouldOpen ? 'Expanded' : 'Collapsed'}`;
+                });
+            });
 
             async function updateChartRange(range) {
                 rangeButtons.forEach(button => {
@@ -375,10 +576,12 @@
                     const historyData = await response.json();
                     const nextActualPrices = buildActualSeries(historyData);
 
-                    chart.updateSeries([
-                        { name: 'Actual Price', type: 'area', data: nextActualPrices },
-                        { name: 'Predicted Price', type: 'line', data: buildPredictionSeries(nextActualPrices) }
-                    ]);
+                    Object.entries(charts).forEach(([modelScope, chart]) => {
+                        chart.updateSeries([
+                            { name: 'Actual Price', type: 'area', data: nextActualPrices },
+                            ...buildPredictionSeries(nextActualPrices, modelScope)
+                        ]);
+                    });
                 } catch (error) {
                     console.error('Failed to update chart range', error);
                 }
@@ -391,7 +594,9 @@
             // Update Chart Theme automatically on Dark mode toggle
             const htmlObserver = new MutationObserver(mutations => {
                 const isDark = document.documentElement.classList.contains('dark');
-                chart.updateOptions({ theme: { mode: isDark ? 'dark' : 'light' } });
+                Object.values(charts).forEach(chart => {
+                    chart.updateOptions({ theme: { mode: isDark ? 'dark' : 'light' } });
+                });
             });
             htmlObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         });
@@ -442,7 +647,7 @@
             const icon = document.getElementById('predict-btn-icon');
 
             if (btn) btn.disabled = false;
-            if (text) text.innerText = 'Predict (LSTM)';
+            if (text) text.innerText = 'Predict';
             if (icon) {
                 icon.classList.remove('animate-spin');
                 icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>';

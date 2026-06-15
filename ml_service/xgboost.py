@@ -6,7 +6,6 @@ import hashlib
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
-from db import register_model_in_db
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -146,6 +145,7 @@ class XGBoostModelRegistry:
         self._save_metadata()
 
         try:
+            from db import register_model_in_db
             register_model_in_db(
                 symbol=symbol,
                 model_type="xgboost",
@@ -202,7 +202,8 @@ class XGBoostModelRegistry:
 # ENHANCED LAG-FEATURE CONFIGURATION
 # ──────────────────────────────────────────────────────────────────────────────
 
-_LAGS           = [1, 2, 3, 5, 7, 10, 14, 20, 30]  # Extended lags
+# FIXED: Removed lag=1 to prevent data leakage (current price = target)
+_LAGS           = [2, 3, 5, 7, 10, 14, 20, 30]  # Start from lag=2 (yesterday)
 _MAX_LAG        = max(_LAGS)
 _ROLLING_WINDOW = 20  # Increased window for better statistics
 
@@ -324,9 +325,22 @@ def _build_lag_feature_matrix(close_prices):
 
 
 def _recursive_forecast(model, close_prices, steps):
-    """Multi-step recursive forecast."""
+    """
+    Multi-step recursive forecast with volatility-adaptive bounds.
+    FIXED: Uses recent volatility to set realistic bounds instead of fixed ±15%.
+    """
     history = list(close_prices)
     forecasts = []
+    
+    # Calculate recent volatility (last 30 days)
+    if len(close_prices) >= 31:
+        recent_returns = np.diff(close_prices[-30:]) / (close_prices[-31:-1] + 1e-8)
+        volatility = np.std(recent_returns)
+    elif len(close_prices) >= 6:
+        recent_returns = np.diff(close_prices[-5:]) / (close_prices[-6:-1] + 1e-8)
+        volatility = np.std(recent_returns)
+    else:
+        volatility = 0.02  # Default 2% daily volatility
 
     for step in range(steps):
         feats = _compute_features_from_history(history)
@@ -334,7 +348,15 @@ def _recursive_forecast(model, close_prices, steps):
 
         if len(history) > 0:
             last_price = float(history[-1])
-            pred = float(np.clip(pred, last_price * 0.85, last_price * 1.15))
+            daily_std = last_price * volatility
+            
+            # Allow ±3 sigma moves per day (99.7% confidence)
+            # Scales with sqrt(days) for multi-step forecasts
+            sigma_multiplier = 3.0
+            lower_bound = last_price - sigma_multiplier * daily_std * np.sqrt(step + 1)
+            upper_bound = last_price + sigma_multiplier * daily_std * np.sqrt(step + 1)
+            
+            pred = float(np.clip(pred, lower_bound, upper_bound))
 
         forecasts.append(pred)
         history.append(pred)
@@ -353,7 +375,7 @@ def calculate_directional_accuracy(y_true, y_pred):
     Directional accuracy = % of times the model correctly predicts
     whether the price will go UP or DOWN compared to consecutive predictions.
 
-    FIXED: Compares sign(diff(actual)) with sign(diff(predicted))
+    FIXED: More sensitive threshold (0.05% instead of 0.1%)
     """
     # Convert to numpy arrays
     y_true = np.asarray(y_true, dtype=float).flatten()
@@ -368,12 +390,12 @@ def calculate_directional_accuracy(y_true, y_pred):
     y_true = y_true[:min_len]
     y_pred = y_pred[:min_len]
 
-    # FIXED: Calculate directional changes with flat-price filtering
+    # FIXED: Calculate directional changes with adjusted threshold (0.05% instead of 0.1%)
     diffs_true = np.diff(y_true)
     diffs_pred = np.diff(y_pred)
 
-    # Filter: only count when there's meaningful movement (>0.1% change)
-    threshold = 0.001 * np.mean(np.abs(y_true))
+    # Filter: only count when there's meaningful movement (>0.05% change)
+    threshold = 0.0005 * np.mean(np.abs(y_true))  # 0.05% of mean price
     valid_mask = (np.abs(diffs_true) > threshold) | (np.abs(diffs_pred) > threshold)
 
     if np.sum(valid_mask) == 0:
@@ -495,7 +517,7 @@ class RegressionTree:
         gradients = np.asarray(gradients, dtype=float).reshape(-1)
         if len(gradients) == 0:
             return 0.0
-        return float(-np.sum(gradients) / (len(gradients) + self.lambda_reg))
+        return float(np.sum(gradients) / (len(gradients) + self.lambda_reg))
 
     def _gain(self, left_g, right_g):
         if len(left_g) == 0 or len(right_g) == 0:

@@ -101,7 +101,7 @@
         @endif
 
         <!-- Interactions -->
-        <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex flex-wrap items-center justify-between gap-4">
+        <div class="px-6 py-4 border-t border-gray-100 w-full dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 @php
                     $isLikedByUser = $note->likes->contains('user_id', auth()->id());
@@ -212,12 +212,12 @@
                 if (!button || !countEl || !iconEl) return;
 
                 const isLiked = form.dataset.liked === '1';
-                
+
                 // Optimistic UI Update
                 form.dataset.liked = isLiked ? '0' : '1';
                 const currentCount = parseInt(countEl.textContent);
                 countEl.textContent = isLiked ? (currentCount - 1) : (currentCount + 1);
-                
+
                 if (isLiked) {
                     // Unlike visual
                     button.classList.remove('border-red-200', 'dark:border-red-800/50', 'bg-red-50', 'dark:bg-red-900/20', 'text-red-500', 'dark:text-red-400');

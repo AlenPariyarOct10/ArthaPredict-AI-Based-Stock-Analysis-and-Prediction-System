@@ -72,6 +72,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Stock Management
     Route::prefix('stocks')->name('stocks.')->group(function () {
         Route::get('/', [StockController::class, 'index'])->name('index');
+        Route::get('/{symbol}/analysis-report', [StockController::class, 'analysisReport'])
+            ->name('analysis_report')
+            ->middleware('throttle:10,1');
         Route::get('/{symbol}', [StockController::class, 'show'])->name('show');
         Route::get('/{symbol}/export', [StockController::class, 'exportData'])->name('export');
 
@@ -135,6 +138,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{note}/comments', [ArthaNoteController::class, 'storeComment'])->name('comments.store');
         Route::patch('/comments/{comment}', [ArthaNoteController::class, 'updateComment'])->name('comments.update');
         Route::delete('/comments/{comment}', [ArthaNoteController::class, 'destroyComment'])->name('comments.destroy');
+        Route::get('/{note}/comments', [ArthaNoteController::class, 'loadComments'])->name('comments.load');
 
         Route::get('/export/csv', [ArthaNoteController::class, 'exportCsv'])->name('export.csv');
     });
@@ -183,6 +187,8 @@ Route::middleware(['auth', 'admin', 'verified'])->prefix('admin')->name('admin.'
         Route::get('/history', [AdminController::class, 'trainingHistory'])->name('history');
         Route::get('/metrics', [AdminController::class, 'modelMetrics'])->name('metrics');
         Route::post('/universal', [AdminController::class, 'trainUniversalModel'])->name('universal');
+        Route::post('/universal/predict', [AdminController::class, 'generateUniversalPredictions'])
+            ->name('universal.predict');
     });
 
     // Dataset Management
@@ -210,6 +216,13 @@ Route::middleware(['auth', 'admin', 'verified'])->prefix('admin')->name('admin.'
         Route::get('/logs', [AdminController::class, 'viewLogs'])->name('logs');
         Route::get('/phpinfo', [AdminController::class, 'phpInfo'])->name('phpinfo')
             ->middleware('password.confirm');
+    });
+
+    // Logo Management
+    Route::prefix('logo')->name('logo.')->group(function () {
+        Route::get('/', [AdminController::class, 'showLogoSettings'])->name('settings');
+        Route::post('/update', [AdminController::class, 'updateLogo'])->name('update');
+        Route::post('/reset', [AdminController::class, 'resetLogo'])->name('reset');
     });
 });
 

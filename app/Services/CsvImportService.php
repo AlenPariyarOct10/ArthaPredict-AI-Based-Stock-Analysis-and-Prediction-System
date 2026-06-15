@@ -210,6 +210,9 @@ class CsvImportService
                 $importedRows += count($batch);
             }
 
+            $this->refreshUsableDatapointCounts(
+                array_keys($processedStockIdsInThisImport)
+            );
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -230,5 +233,33 @@ class CsvImportService
             'errors_log' => $errorsLog,
             'trading_date' => $date,
         ];
+    }
+
+    private function refreshUsableDatapointCounts(array $stockIds): void
+    {
+        if (empty($stockIds)) {
+            return;
+        }
+
+        $updates = StockPrice::whereIn('stock_id', $stockIds)
+            ->select(
+                'stock_id',
+                DB::raw('COUNT(*) as total_count'),
+                DB::raw('MAX(close) as maximum_close'),
+                DB::raw(
+                    'SUM(CASE WHEN close >= 10 THEN 1 ELSE 0 END) '
+                    . 'as ordinary_price_count'
+                )
+            )
+            ->groupBy('stock_id')
+            ->get();
+
+        foreach ($updates as $row) {
+            Stock::whereKey($row->stock_id)->update([
+                'usable_datapoints_count' => $row->maximum_close >= 50
+                    ? $row->ordinary_price_count
+                    : $row->total_count,
+            ]);
+        }
     }
 }

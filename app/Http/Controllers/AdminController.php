@@ -7,12 +7,16 @@ use App\Models\Stock;
 use App\Models\Feedback;
 use App\Models\StockPrediction;
 use App\Models\ModelTrainingJob;
+use App\Models\AppSetting;
 use App\Jobs\TrainModelJob;
 use App\Jobs\TrainUniversalModelJob;
+use App\Jobs\TrainIndividualModelJob;
+use App\Jobs\GenerateUniversalPredictionsJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -75,61 +79,41 @@ class AdminController extends Controller
      */
     public function trainModel(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'stock_id' => 'required|exists:stocks,id',
-            'force_retrain' => 'sometimes|boolean',
+            'model_type' => 'required|in:all,lstm,xgboost,random_forest,moving_average',
         ]);
 
-        $stock = Stock::findOrFail($request->stock_id);
-        $forceRetrain = $request->boolean('force_retrain', false);
-
-        // Check if there is an active job
-        $activeJob = ModelTrainingJob::where('stock_id', $stock->id)
-            ->whereIn('status', ['queued', 'processing'])
-            ->first();
-
-        if ($activeJob && !$forceRetrain) {
-            $currentStage = $activeJob->current_stage ?: 'initializing';
-            $message = $activeJob->status === 'queued'
-                ? "Training is queued and will start shortly."
-                : "Training is currently in progress ({$currentStage}).";
-
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $message,
-                    'job_status' => $activeJob->status
-                ], 409);
-            }
-
-            return back()->with('info', $message);
-        }
-
-        // Create job record
+        $stock = Stock::findOrFail($validated['stock_id']);
         $jobRecord = ModelTrainingJob::create([
             'stock_id' => $stock->id,
             'user_id' => auth()->id(),
             'status' => 'queued',
-            'total_rows' => 0,
             'current_stage' => 'queued',
+            'total_rows' => 1,
+            'processed_rows' => 0,
+            'meta' => [
+                'model_type' => $validated['model_type'],
+                'model_scope' => 'individual',
+                'is_universal' => false,
+            ],
         ]);
 
-        // Dispatch the queue job
-        TrainModelJob::dispatch($stock->id, auth()->id(), $jobRecord->id);
+        TrainIndividualModelJob::dispatch(
+            $stock->id,
+            $validated['model_type'],
+            auth()->id(),
+            $jobRecord->id
+        )->onQueue('ml_training_universal');
 
-        $message = $forceRetrain
-            ? "Model training has been forced for {$stock->symbol}. This may take a few minutes."
-            : "Model training has been successfully queued in the background for {$stock->symbol}.";
-
-        if ($request->wantsJson()) {
-            return response()->json([
+        $message = "{$stock->symbol} individual model training was queued.";
+        return $request->wantsJson()
+            ? response()->json([
                 'success' => true,
                 'message' => $message,
-                'job_id' => $jobRecord->id
-            ]);
-        }
-
-        return back()->with('success', $message);
+                'job_id' => $jobRecord->id,
+            ])
+            : back()->with('success', $message);
     }
 
     /**
@@ -241,6 +225,7 @@ class AdminController extends Controller
             return back()->with('error', 'Only failed jobs can be retried.');
         }
 
+        $failedMeta = $failedJob->meta ?? [];
         DB::beginTransaction();
         try {
             // Create new job record
@@ -248,19 +233,32 @@ class AdminController extends Controller
                 'stock_id' => $failedJob->stock_id,
                 'user_id' => auth()->id(),
                 'status' => 'queued',
-                'meta' => [
+                'meta' => array_merge($failedMeta, [
                     'retry_of_job' => $failedJob->id,
                     'original_error' => $failedJob->error_message,
                     'triggered_by' => auth()->user()->email,
-                ]
+                ])
             ]);
 
-            // Dispatch new job
-            TrainModelJob::dispatch(
-                $failedJob->stock_id,
-                auth()->id(),
-                $newJob->id
-            )->onQueue('ml_training');
+            if (($failedMeta['model_type'] ?? null) === 'universal_predictions') {
+                GenerateUniversalPredictionsJob::dispatch(
+                    $failedJob->stock_id,
+                    $newJob->id
+                )->onQueue('ml_training_universal');
+            } elseif (($failedMeta['model_scope'] ?? null) === 'individual') {
+                TrainIndividualModelJob::dispatch(
+                    $failedJob->stock_id,
+                    $failedMeta['model_type'],
+                    auth()->id(),
+                    $newJob->id
+                )->onQueue('ml_training_universal');
+            } else {
+                TrainUniversalModelJob::dispatch(
+                    $failedMeta['model_type'],
+                    auth()->id(),
+                    $newJob->id
+                )->onQueue('ml_training_universal');
+            }
 
             DB::commit();
 
@@ -283,54 +281,41 @@ class AdminController extends Controller
      */
     public function bulkTrain(Request $request)
     {
-        $request->validate([
-            'stock_ids' => 'required|array',
-            'stock_ids.*' => 'exists:stocks,id',
+        $validated = $request->validate([
+            'model_type' => 'required|in:all,lstm,xgboost,random_forest,moving_average',
         ]);
 
-        $stockIds = $request->stock_ids;
-        $successCount = 0;
-        $failedCount = 0;
-        $errors = [];
-
-        foreach ($stockIds as $stockId) {
-            $stock = Stock::find($stockId);
-
-            // Check for active job
-            $activeJob = ModelTrainingJob::where('stock_id', $stockId)
-                ->whereIn('status', ['queued', 'processing'])
-                ->first();
-
-            if ($activeJob) {
-                $failedCount++;
-                $errors[] = "{$stock->symbol}: Training already in progress";
-                continue;
-            }
-
-            try {
-                $jobRecord = ModelTrainingJob::create([
-                    'stock_id' => $stockId,
-                    'user_id' => auth()->id(),
-                    'status' => 'queued',
-                ]);
-
-                TrainModelJob::dispatch($stockId, auth()->id(), $jobRecord->id)
-                    ->onQueue('ml_training_bulk');
-
-                $successCount++;
-            } catch (\Exception $e) {
-                $failedCount++;
-                $errors[] = "{$stock->symbol}: " . $e->getMessage();
-            }
+        $stocks = Stock::where('is_active', true)
+            ->whereHas('prices')
+            ->orderBy('symbol')
+            ->get();
+        foreach ($stocks as $stock) {
+            $jobRecord = ModelTrainingJob::create([
+                'stock_id' => $stock->id,
+                'user_id' => auth()->id(),
+                'status' => 'queued',
+                'current_stage' => 'queued',
+                'total_rows' => 1,
+                'processed_rows' => 0,
+                'meta' => [
+                    'model_type' => $validated['model_type'],
+                    'model_scope' => 'individual',
+                    'is_universal' => false,
+                    'bulk' => true,
+                ],
+            ]);
+            TrainIndividualModelJob::dispatch(
+                $stock->id,
+                $validated['model_type'],
+                auth()->id(),
+                $jobRecord->id
+            )->onQueue('ml_training_universal');
         }
 
-        $message = "Bulk training initiated: {$successCount} queued, {$failedCount} failed.";
-
-        if (!empty($errors)) {
-            Log::warning('Bulk training partial failure', ['errors' => $errors]);
-        }
-
-        return back()->with('info', $message);
+        return back()->with(
+            'success',
+            "Queued individual {$validated['model_type']} training for {$stocks->count()} stocks."
+        );
     }
 
     /**
@@ -339,7 +324,7 @@ class AdminController extends Controller
     public function trainUniversalModel(Request $request)
     {
         $request->validate([
-            'model_type' => 'required|in:lstm,xgboost,random_forest',
+            'model_type' => 'required|in:all,lstm,xgboost,random_forest,moving_average',
         ]);
 
         $modelType = $request->model_type;
@@ -347,10 +332,13 @@ class AdminController extends Controller
             'lstm' => 'LSTM',
             'xgboost' => 'XGBoost',
             'random_forest' => 'Random Forest',
+            'moving_average' => 'Moving Average',
+            'all' => 'All algorithms',
         };
 
         // Check if there is an active universal model training job
-        $activeJob = ModelTrainingJob::where('meta->model_type', $modelType)
+        $activeJob = ModelTrainingJob::where('meta->is_universal', true)
+            ->where('meta->model_type', '!=', 'universal_predictions')
             ->whereIn('status', ['queued', 'processing'])
             ->first();
 
@@ -400,6 +388,42 @@ class AdminController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+
+    public function generateUniversalPredictions(Request $request)
+    {
+        $validated = $request->validate([
+            'scope' => 'required|in:all,single',
+            'stock_id' => 'nullable|required_if:scope,single|exists:stocks,id',
+        ]);
+
+        $stockId = $validated['scope'] === 'single'
+            ? (int) $validated['stock_id']
+            : null;
+
+        $jobRecord = ModelTrainingJob::create([
+            'stock_id' => $stockId,
+            'user_id' => auth()->id(),
+            'status' => 'queued',
+            'current_stage' => 'queued',
+            'total_rows' => $stockId ? 1 : Stock::where('is_active', true)->count(),
+            'processed_rows' => 0,
+            'meta' => [
+                'model_type' => 'universal_predictions',
+                'is_universal' => true,
+                'scope' => $validated['scope'],
+            ],
+        ]);
+
+        GenerateUniversalPredictionsJob::dispatch($stockId, $jobRecord->id)
+            ->onQueue('ml_training_universal');
+
+        return back()->with(
+            'success',
+            $stockId
+                ? 'Universal predictions were queued for the selected stock.'
+                : 'Universal predictions were queued for all active stocks.'
+        );
     }
 
     /**
@@ -555,5 +579,70 @@ class AdminController extends Controller
             'job_id' => $job->id,
             'stock_id' => $job->stock_id
         ]);
+    }
+
+    /**
+     * Show the logo settings form
+     */
+    public function showLogoSettings()
+    {
+        $settings = AppSetting::where('group', 'general')->get()->keyBy('key');
+        return view('admin.logo-settings', compact('settings'));
+    }
+
+    /**
+     * Update the application logo
+     */
+    public function updateLogo(Request $request)
+    {
+        $request->validate([
+            'logo' => 'required|image|mimes:png,jpg,jpeg,svg|max:2048',
+        ]);
+
+        try {
+            // Delete old logo if exists
+            $oldLogo = AppSetting::get('app_logo');
+            if ($oldLogo && !filter_var($oldLogo, FILTER_VALIDATE_URL) && Storage::exists('public/' . $oldLogo)) {
+                Storage::delete('public/' . $oldLogo);
+            }
+
+            // Store new logo
+            $path = $request->file('logo')->store('logos', 'public');
+
+            // Update setting
+            AppSetting::set('app_logo', $path, 'image', 'general', 'Application Logo', 'The main logo displayed in the sidebar and landing page.');
+
+            // Clear cache
+            Cache::forget('app_settings');
+
+            return back()->with('success', 'Logo updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Logo upload failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to upload logo: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reset the logo to default
+     */
+    public function resetLogo()
+    {
+        try {
+            // Delete current logo if exists
+            $currentLogo = AppSetting::get('app_logo');
+            if ($currentLogo && !filter_var($currentLogo, FILTER_VALIDATE_URL) && Storage::exists('public/' . $currentLogo)) {
+                Storage::delete('public/' . $currentLogo);
+            }
+
+            // Reset to default
+            AppSetting::set('app_logo', 'assets/images/Logo.png', 'image', 'general', 'Application Logo', 'The main logo displayed in the sidebar and landing page.');
+
+            Cache::forget('app_settings');
+
+            return back()->with('success', 'Logo reset to default successfully!');
+        } catch (\Exception $e) {
+            Log::error('Logo reset failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to reset logo: ' . $e->getMessage());
+        }
     }
 }

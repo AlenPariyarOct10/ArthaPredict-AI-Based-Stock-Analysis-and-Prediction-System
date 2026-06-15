@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
-    <link rel="shortcut icon" href="{{ asset('assets/images/Logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ \App\Models\AppSetting::getLogoUrl() }}" type="image/x-icon">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -22,7 +22,7 @@
             <a href="/">
                 <div
                     class="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-md">
-                    <img class="w-20 h-20" src="http://127.0.0.1:8000/assets/images/Logo.png" alt="" srcset="">
+                    <img class="w-20 h-20" src="{{ \App\Models\AppSetting::getLogoUrl() }}" alt="Logo">
                 </div>
             </a>
         </div>

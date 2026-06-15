@@ -15,6 +15,8 @@ class ArthaNoteController extends Controller
             ->with([
                 'user',
                 'likes',
+                'allComments.user',
+                'allComments.replies.user',
             ])
             ->withCount(['likes', 'allComments'])
             ->orderByDesc('is_pinned')
@@ -206,6 +208,19 @@ class ArthaNoteController extends Controller
         ]);
 
         return back()->with('success', 'Comment added.');
+    }
+
+    /**
+     * Load comments for a note (AJAX response).
+     */
+    public function loadComments(ArthaNote $note)
+    {
+        $note->load([
+            'allComments.user',
+            'allComments.replies.user',
+        ]);
+
+        return view('arthanotes._comments-list', compact('note'));
     }
 
     public function updateComment(Request $request, ArthaNoteComment $comment)

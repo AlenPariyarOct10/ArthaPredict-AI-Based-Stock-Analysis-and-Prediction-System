@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#2d3748">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ \App\Models\AppSetting::getAppName() }}</title>
     <meta name="description"
         content="ArthaPredict: Advanced AI-driven stock analysis and prediction for NEPSE and global markets using Machine Learning algorithms.">
-    <link rel="shortcut icon" href="{{ asset('assets/images/Logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ \App\Models\AppSetting::getLogoUrl() }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|space-mono:400,700" rel="stylesheet" />
 
@@ -93,12 +93,12 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                        <img class="w-8 h-8" src="{{ asset('assets/images/Logo.png') }}" alt="" srcset="">
+                        <img class="w-8 h-8" src="{{ \App\Models\AppSetting::getLogoUrl() }}" alt="Logo">
                     </div>
 
                     <span
                         class="text-lg font-bold text-primary dark:text-primary-light">
-                        ArthaPredict
+                        {{ \App\Models\AppSetting::getAppName() }}
                     </span>
                 </div>
 

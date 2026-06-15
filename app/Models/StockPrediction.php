@@ -9,7 +9,14 @@ class StockPrediction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['stock_id', 'model_type', 'target_date', 'predicted_price', 'additional_metrics'];
+    protected $fillable = [
+        'stock_id',
+        'model_type',
+        'model_scope',
+        'target_date',
+        'predicted_price',
+        'additional_metrics',
+    ];
 
     protected $casts = [
         'additional_metrics' => 'array',

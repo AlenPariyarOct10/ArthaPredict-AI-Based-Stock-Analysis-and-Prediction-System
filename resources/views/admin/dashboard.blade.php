@@ -18,6 +18,14 @@
         </div>
     </div>
 
+    <!-- Quick Actions -->
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('admin.logo.settings') }}" class="px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition font-medium flex items-center gap-2">
+            <i class="fa-solid fa-image"></i>
+            Update Logo
+        </a>
+    </div>
+
     <!-- Alert Messages -->
     @if(session('success'))
         <div class="bg-blue-100 dark:bg-blue-900/30 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-xl relative" role="alert">
@@ -51,7 +59,7 @@
             <p class="text-xs mt-1">
                 Your model training requests are currently in the <strong>Queued</strong> state. Because ArthaPredict processes these calculations in the background, you must ensure that your Laravel queue worker is running. Please run the following command in your terminal:
             </p>
-            <code class="block text-xs bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-mono mt-2 p-2 rounded border border-amber-200 dark:border-amber-900/40 select-all">php artisan queue:work</code>
+            <code class="block text-xs bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-mono mt-2 p-2 rounded border border-amber-200 dark:border-amber-900/40 select-all">php artisan queue:work database --queue=ml_training_universal,ml_training,default --timeout=3600</code>
         </div>
     </div>
 
@@ -61,13 +69,14 @@
         <!-- Left Side: Training Trigger Form -->
         <div class="lg:col-span-1 bg-card shadow-sm rounded-xl border border-border p-6 flex flex-col justify-between">
             <div>
-                <h2 class="text-xl font-bold mb-3">Train ML Model</h2>
+                <h2 class="text-xl font-bold mb-3">Generate Model Predictions</h2>
                 <p class="text-sm text-muted-foreground mb-6">
-                    Trigger a force re-train of predictive models (Moving Average, XGBoost, and LSTM) for a specific stock. The training runs in the background and will refresh the prediction tables upon completion.
+                    Generate General and Individual predictions from all four trained algorithms.
                 </p>
 
-                <form action="{{ route('admin.training.start') }}" method="POST" class="space-y-4" id="training-form">
+                <form action="{{ route('admin.training.universal.predict') }}" method="POST" class="space-y-4" id="universal-prediction-single-form">
                     @csrf
+                    <input type="hidden" name="scope" value="single">
                     <div>
                         <label for="stock-trigger" class="block text-sm font-medium text-foreground mb-2">Select Stock Symbol</label>
 
@@ -110,34 +119,89 @@
                     <div class="flex items-center space-x-3">
                         <button type="submit" id="train-submit-btn"
                                 class="flex-1 text-white gradient-accent hover:opacity-90 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition shadow-sm">
-                            Initiate Training
-                        </button>
-
-                        <button type="button" id="force-train-btn"
-                                class="px-3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition"
-                                title="Force retrain (overwrites existing)">
-                            <i class="fa-solid fa-bolt text-lg p-0.5"></i>
+                            Generate Predictions
                         </button>
                     </div>
+                </form>
+                <form action="{{ route('admin.training.universal.predict') }}" method="POST" class="mt-3">
+                    @csrf
+                    <input type="hidden" name="scope" value="all">
+                    <button type="submit"
+                            class="w-full border border-border bg-background hover:bg-muted text-foreground font-medium rounded-lg text-sm px-5 py-2.5 transition">
+                        Generate Both Scopes for All Active Stocks
+                    </button>
                 </form>
                 <!-- Universal Model Training Form -->
                 <div class="mt-8">
                     <h2 class="text-xl font-bold mb-3">Train Universal Model</h2>
                     <p class="text-sm text-muted-foreground mb-6">
-                        Train a universal model (LSTM, XGBoost, or Random Forest) across all stocks. This may take several minutes.
+                        Train all scratch-built universal models or select one algorithm.
                     </p>
                     <form action="{{ route('admin.training.universal') }}" method="POST" class="space-y-4" id="universal-training-form">
                         @csrf
                         <div>
                             <label for="model-type" class="block text-sm font-medium text-foreground mb-2">Select Model Type</label>
                             <select id="model-type" name="model_type" class="w-full bg-background border border-border text-foreground text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="all">All Algorithms</option>
                                 <option value="lstm">LSTM</option>
                                 <option value="xgboost">XGBoost</option>
                                 <option value="random_forest">Random Forest</option>
+                                <option value="moving_average">Moving Average (Benchmark)</option>
                             </select>
                         </div>
                         <button type="submit" class="flex-1 text-white gradient-accent hover:opacity-90 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition shadow-sm">
                             Train Universal Model
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-border">
+                    <h2 class="text-xl font-bold mb-3">Train Individual Model</h2>
+                    <p class="text-sm text-muted-foreground mb-6">
+                        Train stock-specific scratch models using only the selected stock's history.
+                    </p>
+                    <form action="{{ route('admin.training.start') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="individual-stock-id" class="block text-sm font-medium text-foreground mb-2">Stock</label>
+                            <select id="individual-stock-id" name="stock_id" required
+                                    class="w-full bg-background border border-border text-foreground text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="">Select a stock</option>
+                                @foreach($stocks as $stock)
+                                    <option value="{{ $stock->id }}">{{ $stock->symbol }} - {{ $stock->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="individual-model-type" class="block text-sm font-medium text-foreground mb-2">Algorithm</label>
+                            <select id="individual-model-type" name="model_type"
+                                    class="w-full bg-background border border-border text-foreground text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="all">All Algorithms</option>
+                                <option value="lstm">LSTM</option>
+                                <option value="xgboost">XGBoost</option>
+                                <option value="random_forest">Random Forest</option>
+                                <option value="moving_average">Moving Average (Benchmark)</option>
+                            </select>
+                        </div>
+                        <button type="submit"
+                                class="w-full text-white gradient-accent hover:opacity-90 font-medium rounded-lg text-sm px-5 py-2.5 transition shadow-sm">
+                            Train Selected Stock
+                        </button>
+                    </form>
+
+                    <form action="{{ route('admin.training.bulk') }}" method="POST" class="mt-3 space-y-3">
+                        @csrf
+                        <select name="model_type"
+                                class="w-full bg-background border border-border text-foreground text-sm rounded-lg px-3 py-2">
+                            <option value="all">All Algorithms</option>
+                            <option value="lstm">LSTM</option>
+                            <option value="xgboost">XGBoost</option>
+                            <option value="random_forest">Random Forest</option>
+                            <option value="moving_average">Moving Average</option>
+                        </select>
+                        <button type="submit"
+                                class="w-full border border-border bg-background hover:bg-muted text-foreground font-medium rounded-lg text-sm px-5 py-2.5 transition">
+                            Queue Individual Training for All Stocks
                         </button>
                     </form>
                 </div>
